@@ -1,0 +1,77 @@
+package com.example.demo.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.entity.Company;
+import com.example.demo.exception.GlobalException;
+import com.example.demo.exception.ResourceAlreadyExistsException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ResourceNotModifiedException;
+import com.example.demo.repository.CompanyRepository;
+import com.example.demo.service.ICompanyService;
+
+import lombok.RequiredArgsConstructor;
+
+@Service("compserv")
+@RequiredArgsConstructor
+public class CompanyServImpl implements ICompanyService {
+
+	private final CompanyRepository comprepo;
+	
+	@Override
+	public void saveCompany(Company company) {
+		
+//		if(company.getCompanyName()==null) {
+//			throw new GlobalException("Given Company name is null");
+//		}
+		
+		company.setCompanyName(company.getCompanyName().trim());
+//		boolean present = comprepo.findByCompanyName(company.getCompanyName()).isPresent();
+//		if(present) {
+//			throw new ResourceAlreadyExistsException("Company with name "+company.getCompanyName()+" is already present");
+//		}
+		
+		Company savedCompany = comprepo.save(company);
+		if(savedCompany == null) {
+			throw new GlobalException("Company "+company.getCompanyName()+" is not saved");
+		}
+	}
+
+	@Override
+	public Company getCompanyById(Long id) {
+	
+		return comprepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company", "id", ""+id));
+	}
+
+	@Override
+	public Company getCompanyByName(String name) {
+		return comprepo.findByCompanyName(name).orElseThrow(() -> new ResourceNotFoundException("Company", "name", name));
+		
+	}
+
+	@Override
+	public List<Company> getAllCompanies() {
+		List<Company> companyList = comprepo.findAll();
+		if(companyList.size() > 0)
+			return companyList;
+		throw new GlobalException("No Companies found");
+	}
+
+	@Override
+	@Transactional
+	public void updateCompany(Company company) {
+
+		if(company.getCompanyName()==null) {
+			throw new GlobalException("Given Company name is null");
+		}
+		company.setCompanyName(company.getCompanyName().trim());
+		int result = comprepo.updateCompany(company.getCompanyId(), company.getCompanyName());
+		if(result < 0) {
+			throw new ResourceNotModifiedException("Company", "name", company.getCompanyName());
+		}
+	}
+
+}

@@ -1,0 +1,11 @@
+build:
+  version: "1.0"
+
+company:
+  message: "Welcome to Asset Management Company related prod APIs"
+  onCallSupport:
+    - (222) 222-4862
+    - (222) 222-7414
+  contactDetails:
+    name : "Samyak Pagare - Product Owner"
+    email : "crankyash@gmail.com"
