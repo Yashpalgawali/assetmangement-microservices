@@ -1,0 +1,25 @@
+server:
+  port: 9092
+spring:
+  application:
+    name: department
+  datasource:
+    url: jdbc:mysql://localhost:3399/departmentdb
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+build:
+  version: "3.0"
+
+department:
+  message: "Welcome to AssetManagement Deaprtment local APIs"
+  contactDetails:
+    - name: "Sumedh Pagare - Developer"
+    - email: "sumedh@gmail.com"
+  onCallSupport:
+    - (111) 111-1234
+    - (111) 111-9874

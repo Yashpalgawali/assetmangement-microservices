@@ -13,7 +13,7 @@ import com.example.demo.entity.Department;
 @Repository("deptrepo")
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
-	@Query("UPDATE Deaprtment d SET d.departmentName=:deptName,d.companyId=:companyId WHERE d.departmentId=:deptId")
+	@Query("UPDATE Department d SET d.departmentName=:deptName,d.companyId=:companyId WHERE d.departmentId=:deptId")
 	@Modifying
 	public int updateDepartment(Long deptId,String deptName,Long companyId);
 	

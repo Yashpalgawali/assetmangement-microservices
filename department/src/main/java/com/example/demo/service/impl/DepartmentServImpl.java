@@ -10,6 +10,8 @@ import com.example.demo.dto.DepartmentDto;
 import com.example.demo.entity.Department;
 import com.example.demo.exception.GlobalException;
 import com.example.demo.exception.ResourceAlreadyExistsException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ResourceNotModifiedException;
 import com.example.demo.mapper.DepartmentMapper;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.service.IDepartmentService;
@@ -67,19 +69,25 @@ public class DepartmentServImpl implements IDepartmentService {
 	@Override
 	public DepartmentDto getDepartmentById(Long deptId) {
 		
-		return null;
+		Department found = deptrepo.findById(deptId).orElseThrow(()-> new ResourceNotFoundException("Department", "ID", ""+deptId));
+		DepartmentDto mapToDepartmentDto = DepartmentMapper.mapToDepartmentDto(found, new DepartmentDto());
+		return mapToDepartmentDto;
 	}
 
 	@Override
 	public DepartmentDto getDepartmentByDeptName(String deptName) {
-		// TODO Auto-generated method stub
-		return null;
+		Department department = deptrepo.findByDepartmentName(deptName).orElseThrow(()-> new ResourceNotFoundException("Department", "Name", deptName));
+		DepartmentDto deptDto = DepartmentMapper.mapToDepartmentDto(department, new DepartmentDto());
+		return deptDto;
 	}
 
 	@Override
 	public void updateDepartment(DepartmentDto department) {
-		// TODO Auto-generated method stub
-
+		
+		int res = deptrepo.updateDepartment(department.getDepartmentId(), department.getDepartmentName(), department.getCompanyId());
+		if(res < 0) {
+			throw new ResourceNotModifiedException("Department", "name", department.getDepartmentName());
+		}
 	}
 
 }

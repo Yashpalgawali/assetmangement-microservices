@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +31,8 @@ public class Company {
 	Long companyId;
 	
 	@Column(unique = true)
+	@Size(min = 2, max=40 , message="Company Name must have at least 2 or 40 characters")
+	@NotBlank(message = "Company Name can't be blank")
 	String companyName;
 	
 }

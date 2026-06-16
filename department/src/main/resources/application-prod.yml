@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+build:
+  version: "2.0"
+
+department:
+  message: "Welcome to AssetManagement Deaprtment Prod APIs"
+  contactDetails:
+    - name: "Samrat Gawali - Product Owner"
+    - email: "samrat@gmail.com"
+  onCallSupport:
+    - (555) 555-6541
+    - (555) 555-1020

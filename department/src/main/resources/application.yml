@@ -11,12 +11,14 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  profiles:
+    active: "qa"
 
 build:
   version: "3.0"
 
 department:
-  message: "Welcome to AssetManagement Deaprtment local APIs"
+  message: "Welcome to AssetManagement Department local APIs"
   contactDetails:
     - name: "Sumedh Pagare - Developer"
     - email: "sumedh@gmail.com"
