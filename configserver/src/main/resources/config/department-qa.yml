@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: "qa"
+
+build:
+  version: "1.0"
+
+department:
+  message: "Welcome to AssetManagement Deaprtment QA APIs"
+  contactDetails:
+    - name: "Saksham Bankar - QA LEad"
+    - email: "saksham@gmail.com"
+  onCallSupport:
+    - (777) 777-4561
+    - (777) 777-7894

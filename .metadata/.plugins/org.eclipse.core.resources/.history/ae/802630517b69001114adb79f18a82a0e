@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: "qa"
+build:
+  version: "2.0"
+
+company:
+  message: "Welcome to  Asset Management Company related QA APIs"
+  onCallSupport:
+    - (111) 111-1234
+    - (111) 111-9874
+  contactDetails:
+    name : "Shaurya Gawali - QA Lead"
+    email : "shaurya@gmail.com"

@@ -51,7 +51,7 @@ public class DepartmentController {
 		return ResponseEntity.status(HttpStatus.OK).body(deptList);
 	}
 	
-	@GetMapping("/build-info")
+	@GetMapping("/contact-info")
 	public ResponseEntity<DepartmentContactInfoDto> getBuildInfo(){
 		 
 		return ResponseEntity.status(HttpStatus.OK).body(departmentContactInfoDto);

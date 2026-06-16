@@ -1,0 +1,13 @@
+server:
+  port: 9092
+spring:
+  application:
+    name: department
+  datasource:
+    url: jdbc:mysql://localhost:3399/departmentdb
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

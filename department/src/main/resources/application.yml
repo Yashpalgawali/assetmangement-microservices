@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: department
+  profiles:
+    active: "prod"
   datasource:
     url: jdbc:mysql://localhost:3399/departmentdb
     username: root
@@ -11,17 +13,5 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  profiles:
-    active: "qa"
-
-build:
-  version: "3.0"
-
-department:
-  message: "Welcome to AssetManagement Department local APIs"
-  contactDetails:
-    - name: "Sumedh Pagare - Developer"
-    - email: "sumedh@gmail.com"
-  onCallSupport:
-    - (111) 111-1234
-    - (111) 111-9874
+  config:
+    import: "optional:configserver:http://localhost:8071/"

@@ -1,0 +1,11 @@
+build:
+  version: "3.0"
+
+company:
+  message: "Welcome to  Asset Management Company related local APIs"
+  onCallSupport:
+    - (111) 111-1234
+    - (111) 111-9874
+  contactDetails:
+    name : "Yashpal Gawali -Developer"
+    email : "crankyash@gmail.com"

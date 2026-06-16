@@ -1,0 +1,15 @@
+server:
+  port: 9091
+spring:
+  application:
+    name: "company"
+  profiles:
+    active: "prod"
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3399/companydb
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
