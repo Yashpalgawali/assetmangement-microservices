@@ -79,7 +79,7 @@ public class CompanyController {
 	@GetMapping("/build-info")
 	public ResponseEntity<String> getBuildInfo()
 	{
-		return ResponseEntity.status(HttpStatus.OK).body(env.getProperty("JAVA_HOME"));
+		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
 	}
 	
 	@GetMapping("/contact-info")

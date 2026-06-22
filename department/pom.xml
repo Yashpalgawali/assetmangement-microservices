@@ -12,6 +12,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>department</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>department</name>
 	<description />
 	<url />
@@ -46,7 +47,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-config-client</artifactId>
+			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -149,7 +150,7 @@
 				<version>3.4.2</version>
 				<configuration>
 					<to>
-						<image>yashpalgawali/${project.artifactId}:s1</image>
+						<image>yashpalgawali/${project.artifactId}:v1</image>
 					</to>
 				</configuration>
 			</plugin>

@@ -1,0 +1,29 @@
+services:
+  configserver:
+    image: "yashpalgawali/configserver:v1"
+    container_name: "ms-configserver"
+    ports:
+      - "8071:8071"
+    deploy:
+      resources:
+        limits:
+          memory: 200m
+
+  company:
+    image: "yashpalgawali/company:v1"
+    container_name: "ms-company"
+    ports:
+      - "9091:9091"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+  department:
+    image: "yashpalgawali/department:v1"
+    container_name: "ms-department"
+    ports:
+      - "9092:9092"
+    deploy:
+      resources:
+        limits:
+          memory: 700m

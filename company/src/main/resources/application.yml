@@ -8,10 +8,12 @@ spring:
   datasource:
     username: root
     password: root
+#    url: jdbc:mysql://host.docker.internal:3399/companydb
     url: jdbc:mysql://localhost:3399/companydb
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
   config:
+#    import: "optional:configserver:http://host.docker.internal:8071/"
     import: "optional:configserver:http://localhost:8071/"

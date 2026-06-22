@@ -1,0 +1,5 @@
+services:
+  company:
+    image: "yashpalgawali/company:v1"
+    container_name: "ms-company"
+    

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.DepartmentDto;
 import com.example.demo.entity.Department;
@@ -25,25 +26,25 @@ public class DepartmentServImpl implements IDepartmentService {
 	private final DepartmentRepository deptrepo;
 	
 	@Override
-	public void createDepartment(DepartmentDto department) {
+	public void createDepartment(DepartmentDto departmentDto) {
 		
-		if(department.getDepartmentName().equals(" ") || department.getDepartmentName() == null) {
+		if(departmentDto.getDepartmentName().equals(" ") || departmentDto.getDepartmentName() == null) {
 			throw new GlobalException("Deaprment Name can't be blank");
 		}
 				
-		department.setDepartmentName(department.getDepartmentName().trim());
+		departmentDto.setDepartmentName(departmentDto.getDepartmentName().trim());
 		
-		Optional<Department> found =deptrepo.findByDepartmentName(department.getDepartmentName());
+		Optional<Department> found =deptrepo.findByDepartmentNameAndCompanyId(departmentDto.getDepartmentName(),departmentDto.getCompanyId());
 		
 		if(found.isPresent()){
-			throw new ResourceAlreadyExistsException("Department "+department.getDepartmentName()+"is already present");
+			throw new ResourceAlreadyExistsException("Department "+departmentDto.getDepartmentName()+"is already present in the company");
 		}
 		
-		Department mapped = DepartmentMapper.mapToDepartment(department, new Department());
+		Department mapped = DepartmentMapper.mapToDepartment(departmentDto, new Department());
 		
 		Department savedDept = deptrepo.save(mapped);
-		if(savedDept!= null) {
-			throw new GlobalException("Department "+department.getDepartmentName()+" is not created");
+		if(savedDept== null) {
+			throw new GlobalException("Department "+departmentDto.getDepartmentName()+" is not created");
 		}
 		
 	}
@@ -69,7 +70,7 @@ public class DepartmentServImpl implements IDepartmentService {
 	@Override
 	public DepartmentDto getDepartmentById(Long deptId) {
 		
-		Department found = deptrepo.findById(deptId).orElseThrow(()-> new ResourceNotFoundException("Department", "ID", ""+deptId));
+		Department found = deptrepo.findById(deptId).orElseThrow(()-> new ResourceNotFoundException("Department", "ID", String.valueOf(deptId)));
 		DepartmentDto mapToDepartmentDto = DepartmentMapper.mapToDepartmentDto(found, new DepartmentDto());
 		return mapToDepartmentDto;
 	}
@@ -82,7 +83,10 @@ public class DepartmentServImpl implements IDepartmentService {
 	}
 
 	@Override
+	@Transactional
 	public void updateDepartment(DepartmentDto department) {
+		
+		deptrepo.findById(department.getDepartmentId()).orElseThrow(()-> new ResourceNotFoundException("Department", "ID", ""+department.getDepartmentId()));
 		
 		int res = deptrepo.updateDepartment(department.getDepartmentId(), department.getDepartmentName(), department.getCompanyId());
 		if(res < 0) {

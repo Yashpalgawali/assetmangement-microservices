@@ -1,0 +1,31 @@
+server:
+  port: 8071
+spring:
+  application:
+    name: configserver
+# Reading Configs from config folder 
+#  profiles:
+#    active: native
+#  cloud:
+#    config:
+#      server:
+#        native:
+#          search-locations: "classpath:/config"
+# Reading Configs from a File location
+#  profiles:
+#    active: native
+#  cloud:
+#    config:
+#      server:
+#        native:
+#          search-locations: "file:///E://asset management microservice config"
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: "https://github.com/Yashpalgawali/assetmanagement-microservices-configuration.git"
+          default-label: main
+          timeout: 5
+          clone-on-start: true

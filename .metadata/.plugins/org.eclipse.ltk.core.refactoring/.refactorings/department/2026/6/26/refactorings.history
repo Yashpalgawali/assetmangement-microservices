@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;department&apos; in &apos;com.example.demo.service.impl.DepartmentServImpl.createDepartment(...)&apos; to &apos;departmentDto&apos;&#x0D;&#x0A;- Original project: &apos;department&apos;&#x0D;&#x0A;- Original element: &apos;com.example.demo.service.impl.DepartmentServImpl.createDepartment(DepartmentDto).department&apos;&#x0D;&#x0A;- Renamed element: &apos;department&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;department&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.demo.service.impl{DepartmentServImpl.java[DepartmentServImpl~createDepartment~QDepartmentDto;@department!929!952!943!952!QDepartmentDto;!0!true" name="departmentDto" references="true" stamp="1782121102632" version="1.0"/>
+</session>

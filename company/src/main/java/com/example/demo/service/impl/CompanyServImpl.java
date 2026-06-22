@@ -43,7 +43,6 @@ public class CompanyServImpl implements ICompanyService {
 
 	@Override
 	public Company getCompanyById(Long id) {
-	
 		return comprepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company", "id", ""+id));
 	}
 
