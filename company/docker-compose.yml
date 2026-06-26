@@ -1,4 +1,11 @@
 services:
+  rabbitmq:
+    container_name: "rabbitmq"
+    hostname: localhost
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    
   configserver:
     image: "yashpalgawali/configserver:v1"
     container_name: "ms-configserver"
@@ -22,6 +29,13 @@ services:
           memory: 700m
     networks:
       - assetmanagement
+    environment:
+      SPRING_APPLICATION_NAME: "company"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILES_ACTIVE: "default"
+      SPRING_RABBITMQ_USERNAME: "guest"
+      SPRING_RABBITMQ_PASSWORD: "guest"
+
 
   department:
     image: "yashpalgawali/department:v1"
@@ -34,6 +48,11 @@ services:
           memory: 700m
     networks:
       - assetmanagement
+    environment:
+      SPRING_APPLICATION_NAME: "department"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILES_ACTIVE: "default"
+
 
 networks:
   assetmanagement:

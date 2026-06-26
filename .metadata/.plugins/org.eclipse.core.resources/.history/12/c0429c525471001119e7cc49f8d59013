@@ -1,0 +1,23 @@
+server:
+  port: 9091
+spring:
+  application:
+    name: "company"
+  profiles:
+    active: "prod"
+  datasource:
+    username: root
+    password: root
+#    url: jdbc:mysql://host.docker.internal:3399/companydb
+    url: jdbc:mysql://localhost:3399/companydb
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  rabbitmq:
+    host: 5672
+    username: guest
+    password: guest
+  config:
+#    import: "optional:configserver:http://host.docker.internal:8071/"
+    import: "optional:configserver:http://localhost:8071/"
