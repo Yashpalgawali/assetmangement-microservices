@@ -15,5 +15,16 @@ spring:
       ddl-auto: update
     show-sql: true
   config:
-#    import: "optional:configserver:http://localhost:8071/"
-   import: "optional:configserver:http://host.docker.internal:8071/"
+    import: "optional:configserver:http://localhost:8071/"
+#    import: "optional:configserver:http://configserver:8071/"
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
