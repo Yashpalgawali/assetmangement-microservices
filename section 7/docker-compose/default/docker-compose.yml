@@ -1,0 +1,115 @@
+services:
+  companydb:
+    image: mysql
+    container_name: "companydb"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: companydb
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  departmentdb:
+    image: mysql
+    container_name: "departmentdb"
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: departmentdb
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+#  designationdb:
+#    image: mysql
+#    container_name: "designationdb"
+#    ports:
+#      - "3308:3306"
+#    environment:
+#      MYSQL_DATABASE: designationdb
+#    extends:
+#      file: common-config.yml
+#      service: microservice-db-config
+
+  rabbit:
+    image: rabbitmq:4-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      retries: 10
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  configserver:
+    image: "yashpalgawali/configserver:v1"
+    ports:
+      - "8071:8071"
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s 
+      retries: 15
+      start_period: 10s
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  company:
+    image: "yashpalgawali/company:v1"
+    container_name: "company-ms"
+    ports:
+      - "9091:9091"
+    depends_on:
+      companydb:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "company"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  department:
+    image: "yashpalgawali/department:v1"
+    container_name: "department-ms"
+    ports:
+      - "9092:9092"
+    depends_on:
+      departmentdb:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "department"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://departmentdb:3306/departmentdb"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+  
+#  designation:
+#    image: "yashpalgawali/designation:v1"
+#    container_name: "designation-ms"
+#    ports:
+#      - "9093:9093"
+#    depends_on:
+#      designationdb:
+#        condition: service_healthy
+#    environment:
+#      SPRING_APPLICATION_NAME: "designation"
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://designationdb:3306/designationdb"
+#    extends:
+#      file: common-config.yml
+#      service: microservice-configserver-config
+
+networks:
+  assetmanagement:
+    driver: "bridge"
