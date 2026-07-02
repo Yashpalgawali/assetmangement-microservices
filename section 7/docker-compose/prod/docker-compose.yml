@@ -1,6 +1,6 @@
 services:
   companydb:
-    image: mysql
+#    image: mysql
     container_name: "companydb"
     ports:
       - "3306:3306"
@@ -11,7 +11,7 @@ services:
       service: microservice-db-config
 
   departmentdb:
-    image: mysql
+#    image: mysql
     container_name: "departmentdb"
     ports:
       - "3307:3306"
@@ -22,7 +22,6 @@ services:
       service: microservice-db-config
 
 #  designationdb:
-#    image: mysql
 #    container_name: "designationdb"
 #    ports:
 #      - "3308:3306"
@@ -65,6 +64,23 @@ services:
       file: common-config.yml
       service: microservice-base-config
 
+  eurekaserver:
+    image: "yashpalgawali/eurekaserver:v1"
+    ports:
+      - "8070:8070"
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s 
+      retries: 15
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+
   company:
     image: "yashpalgawali/company:v1"
     container_name: "company-ms"
@@ -78,7 +94,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
 
   department:
     image: "yashpalgawali/department:v1"
@@ -93,7 +109,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://departmentdb:3306/departmentdb"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
   
 #  designation:
 #    image: "yashpalgawali/designation:v1"
@@ -108,7 +124,7 @@ services:
 #      SPRING_DATASOURCE_URL: "jdbc:mysql://designationdb:3306/designationdb"
 #    extends:
 #      file: common-config.yml
-#      service: microservice-configserver-config
+#      service: microservice-eureka-config
 
 networks:
   assetmanagement:
