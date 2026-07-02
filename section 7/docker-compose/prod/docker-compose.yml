@@ -96,6 +96,21 @@ services:
       file: common-config.yml
       service: microservice-eureka-config
 
+  company1:
+    image: "yashpalgawali/company:v1"
+    container_name: "company-ms1"
+    ports:
+      - "9191:9091"
+    depends_on:
+      companydb:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "company"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
   department:
     image: "yashpalgawali/department:v1"
     container_name: "department-ms"
