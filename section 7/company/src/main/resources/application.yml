@@ -51,9 +51,20 @@ management:
         include: "*"
     access:
       default: unrestricted
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
   info:
     env:
       enabled: true
+  endpoint:
+    shutdown:
+      access: unrestricted
+    health:
+      probes:
+        enabled: true
 
 endpoints:
   shutdown:

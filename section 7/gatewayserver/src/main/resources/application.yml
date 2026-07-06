@@ -30,12 +30,20 @@ management:
         include: "*" 
     access:
       default: unrestricted
+  health:
+    readinessstate:
+      enabled: true
+    livenessstate:
+      enabled: true
   info:
     env:
       enabled: true
   endpoint:
     gateway:
       access: unrestricted
+    health:
+      probes:
+        enabled: true
 
 info:
   app:

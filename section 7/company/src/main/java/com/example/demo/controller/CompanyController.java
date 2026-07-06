@@ -48,14 +48,17 @@ public class CompanyController {
 	}
 	
 	@GetMapping("/")
-	public ResponseEntity<List<Company>> getAllCompaniesList()
+	public ResponseEntity<List<Company>> getAllCompaniesList(@RequestHeader("assetmanagement-correlation-id") String correlationId)
 	{
+		logger.debug("inside getall company list()  correlationID is  {}",correlationId);
+		
 		var list = compserv.getAllCompanies();
+		logger.debug("inside getall company list() is {}",list);
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Company> getCompanyById(@RequestHeader String correlationId,  @PathVariable Long id)
+	public ResponseEntity<Company> getCompanyById(@RequestHeader("assetmanagement-correlation-id") String correlationId,  @PathVariable Long id)
 	{
 		logger.info(" inside  company controller assetmangement-correlationID found is {}",correlationId);
 		var company = compserv.getCompanyById(id);

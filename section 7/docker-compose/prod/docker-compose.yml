@@ -80,12 +80,17 @@ services:
       file: common-config.yml
       service: microservice-configserver-config
 
-
   company:
     image: "yashpalgawali/company:v1"
     container_name: "company-ms"
     ports:
       - "9091:9091"
+    healthcheck:
+      test: "curl --fail --silent localhost:9091/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s 
+      retries: 15
+      start_period: 10s
     depends_on:
       companydb:
         condition: service_healthy
@@ -96,26 +101,32 @@ services:
       file: common-config.yml
       service: microservice-eureka-config
 
-  company1:
-    image: "yashpalgawali/company:v1"
-    container_name: "company-ms1"
-    ports:
-      - "9191:9091"
-    depends_on:
-      companydb:
-        condition: service_healthy
-    environment:
-      SPRING_APPLICATION_NAME: "company"
-      SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
-    extends:
-      file: common-config.yml
-      service: microservice-eureka-config
+#  company1:
+#    image: "yashpalgawali/company:v1"
+#    container_name: "company-ms1"
+#    ports:
+#      - "9191:9091"
+#    depends_on:
+#      companydb:
+#        condition: service_healthy
+#    environment:
+#      SPRING_APPLICATION_NAME: "company"
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
+#    extends:
+#      file: common-config.yml
+#      service: microservice-eureka-config
 
   department:
     image: "yashpalgawali/department:v1"
     container_name: "department-ms"
     ports:
       - "9092:9092"
+    healthcheck:
+      test: "curl --fail --silent localhost:9092/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s 
+      retries: 15
+      start_period: 10s
     depends_on:
       departmentdb:
         condition: service_healthy
@@ -131,6 +142,12 @@ services:
 #    container_name: "designation-ms"
 #    ports:
 #      - "9093:9093"
+#     healthcheck:
+#       test: "curl --fail --silent localhost:9092/actuator/health/readiness | grep UP || exit 1"
+#       interval: 10s
+#       timeout: 5s 
+#       retries: 15
+#       start_period: 10s
 #    depends_on:
 #      designationdb:
 #        condition: service_healthy
@@ -141,6 +158,21 @@ services:
 #      file: common-config.yml
 #      service: microservice-eureka-config
 
+  gatewayserver:
+    image: "yashpalgawali/gatewayserver:v1"
+    container_name: "gatewayserver-ms"
+    ports:
+      - "8072:8072"
+    depends_on:
+      company:
+        condition: service_healthy
+      department:
+        condition: service_healthy          
+    environment:
+      SPRING_APPLICATION_NAME: "gatewayserver"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
 networks:
   assetmanagement:
     driver: "bridge"

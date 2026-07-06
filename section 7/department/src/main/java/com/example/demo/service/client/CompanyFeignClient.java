@@ -1,5 +1,7 @@
 package com.example.demo.service.client;
 
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,10 @@ import com.example.demo.dto.Company;
 @FeignClient(value = "company")
 public interface CompanyFeignClient {
 
-	@GetMapping(value ="/company/{id}", consumes = "application/json")
-	public ResponseEntity<Company> getCompanyById(@RequestHeader String correlationId, @PathVariable Long id);
+    @GetMapping(value = "/company/{id}", produces = "application/json")
+    public ResponseEntity<Company> getCompanyById(@RequestHeader("assetmanagement-correlation-id") String correlationId,@PathVariable Long id);
+
+    @GetMapping("/company/")
+    public ResponseEntity<List<Company>> getAllCompaniesList(@RequestHeader("assetmanagement-correlation-id") String correlationId);
 }
+

@@ -2,7 +2,9 @@ package com.example.demo.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,22 +64,34 @@ public class DepartmentServImpl implements IDepartmentService {
 		var list = deptrepo.findAll();
 		if(list.size() >0 )
 		{
-			logger.debug("assetmanagement-correlation-id in getlldepartments() {} ",correlationId);
+			List<Company> compList = companyClient.getAllCompaniesList(correlationId).getBody();
+			
+			logger.debug("assetmanagement-correlation-id in getlldepartments() {} and the company List is {} ",correlationId ,compList);
 			return list.stream().map((dept) -> {
 				
-				DepartmentDto deptDto = new DepartmentDto();
+					logger.warn(" found deptList {}",dept);
+					DepartmentDto deptDto = new DepartmentDto();
 					
 					deptDto.setDepartmentId(dept.getDepartmentId());
 					deptDto.setDepartmentName(dept.getDepartmentName());
-					Company company = companyClient.getCompanyById(correlationId,dept.getCompanyId()).getBody();
-					deptDto.setCompanyId(company.getCompanyId());
-					deptDto.setCompanyName(company.getCompanyName());
+					
+					Predicate<? super Company> predicate =  p-> dept.getCompanyId() == p.getCompanyId(); 
+					Optional<Company> company = compList.stream().filter(predicate ).findFirst();
+					
+					if(company.isPresent()) {
+						deptDto.setCompanyId(company.get().getCompanyId());
+						deptDto.setCompanyName(company.get().getCompanyName());	
+					}
+					else {
+						deptDto.setCompanyId(dept.getCompanyId());
+						deptDto.setCompanyName("");	
+					}
 					
 				return deptDto;
 			}).collect(Collectors.toList());			
 		}
 			
-		throw new GlobalException("No Department(s) found");
+		throw new ResourceNotFoundException("Department","Name","name");
 	}
 
 	@Override
