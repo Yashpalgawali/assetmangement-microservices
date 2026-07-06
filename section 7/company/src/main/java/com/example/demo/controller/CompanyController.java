@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +38,8 @@ public class CompanyController {
 	
 	private final CompanyContactInfoDto companyContactInfoDto;
 	
+	private static final Logger logger = LoggerFactory.getLogger(CompanyController.class); 
+	
 	@PostMapping("/")
 	public ResponseEntity<ResponseDto> createCompany(@RequestBody Company company )
 	{
@@ -50,8 +55,9 @@ public class CompanyController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Company> getCompanyById(@PathVariable Long id)
+	public ResponseEntity<Company> getCompanyById(@RequestHeader String correlationId,  @PathVariable Long id)
 	{
+		logger.info(" inside  company controller assetmangement-correlationID found is {}",correlationId);
 		var company = compserv.getCompanyById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(company);
 	}
