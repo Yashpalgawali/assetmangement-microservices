@@ -7,9 +7,9 @@ import com.example.demo.dto.DepartmentDto;
 public interface IDepartmentService {
 
 	public void createDepartment(DepartmentDto department);	
-	public List<DepartmentDto> getAllDepartments();
-	public DepartmentDto getDepartmentById(Long deptId);
-	public DepartmentDto getDepartmentByDeptName(String deptName);
+	public List<DepartmentDto> getAllDepartments(String correlationId);
+	public DepartmentDto getDepartmentById(String correlationId,Long deptId);
+	public DepartmentDto getDepartmentByDeptName(String correlationId,String deptName);
 	public void updateDepartment(DepartmentDto department);
 
 }

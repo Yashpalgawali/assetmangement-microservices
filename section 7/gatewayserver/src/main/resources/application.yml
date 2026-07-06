@@ -1,0 +1,54 @@
+server:
+  port: 8072
+spring:
+  application:
+    name: gatewayserver
+  config:
+    import: optional:configserver:http://localhost:8071/
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+              lower-case-service-id: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" 
+    access:
+      default: unrestricted
+  info:
+    env:
+      enabled: true
+  endpoint:
+    gateway:
+      access: unrestricted
+
+info:
+  app:
+    name: "gatewayserver"
+    description: "Asset Management APi Gateway server"
+    version: "1.0.0"
+
+endpoints:
+  shutdown:
+    enabled: true
+
+logging:
+  level:
+    com:
+      example:
+        demo: DEBUG

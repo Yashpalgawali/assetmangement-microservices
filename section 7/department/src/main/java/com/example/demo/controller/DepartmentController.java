@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +31,8 @@ public class DepartmentController {
 	
 	private final DepartmentContactInfoDto departmentContactInfoDto;
 	
+	private final Logger logger = LoggerFactory.getLogger(DepartmentController.class);
+	
 	@PostMapping("/")
 	public ResponseEntity<ResponseDto> createDepartment(@RequestBody DepartmentDto deptDto){
 		deptserv.createDepartment(deptDto);
@@ -41,14 +46,21 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<DepartmentDto> getDepartmentDto(@PathVariable Long id){
-		DepartmentDto departmentDto = deptserv.getDepartmentById(id);
+	public ResponseEntity<DepartmentDto> getDepartmentDto(@RequestHeader("assetmanagement-correlation-id") String correlationId ,@PathVariable Long id){
+		DepartmentDto departmentDto = deptserv.getDepartmentById(correlationId,id);
+		return ResponseEntity.status(HttpStatus.OK).body(departmentDto);
+	}
+	
+	@GetMapping("/name/{name}")
+	public ResponseEntity<DepartmentDto> getDepartmentDto(@RequestHeader("assetmanagement-correlation-id") String correlationId ,@PathVariable String name){
+		DepartmentDto departmentDto = deptserv.getDepartmentByDeptName(correlationId,name);
 		return ResponseEntity.status(HttpStatus.OK).body(departmentDto);
 	}
 	
 	@GetMapping("/")
-	public ResponseEntity<List<DepartmentDto>> getAllDepartmentsDto(){
-		List<DepartmentDto> deptList= deptserv.getAllDepartments();
+	public ResponseEntity<List<DepartmentDto>> getAllDepartmentsDto(@RequestHeader("assetmanagement-correlation-id") String correlationId ){
+		logger.debug("assetmanagement-correlation-id {} ",correlationId);
+		List<DepartmentDto> deptList= deptserv.getAllDepartments(correlationId);
 		return ResponseEntity.status(HttpStatus.OK).body(deptList);
 	}
 	
