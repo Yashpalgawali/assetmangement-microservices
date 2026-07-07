@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.example.demo.dto.Company;
 
-@FeignClient(value = "company")
+@FeignClient(name = "company", fallback = CompanyFallBack.class)
 public interface CompanyFeignClient {
 
     @GetMapping(value = "/company/{id}", produces = "application/json")

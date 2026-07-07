@@ -24,6 +24,10 @@ public class GatewayserverApplication {
 								.filters(f -> 
 											f.rewritePath("/assetmanagement/company/(?<segment>.*)", "/${segment}")
 											  .addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString() )
+											  .circuitBreaker(config -> config.setName("companyCircuitBreaker")
+													  						.setFallbackUri("forward:/contactSupport")
+													  )
+											   
 										)
 								.uri("lb://COMPANY"))
 						
@@ -31,6 +35,7 @@ public class GatewayserverApplication {
 								.filters(f -> 
 											f.rewritePath("/assetmanagement/department/(?<segment>.*)", "/${segment}")
 											.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString())
+											.circuitBreaker(config -> config.setName("departmentCircuitBreaker"))
 										)
 								.uri("lb://DEPARTMENT"))
 						

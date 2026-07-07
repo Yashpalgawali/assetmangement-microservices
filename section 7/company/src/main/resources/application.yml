@@ -24,7 +24,6 @@ spring:
     username: guest
     password: guest
   config:
-#    import: "optional:configserver:http://host.docker.internal:8071/"
     import: "optional:configserver:http://localhost:8071/"
 
 # Eureka server   
