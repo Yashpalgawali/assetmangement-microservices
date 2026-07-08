@@ -22,6 +22,7 @@ import com.example.demo.dto.ResponseDto;
 import com.example.demo.entity.Company;
 import com.example.demo.service.ICompanyService;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -85,15 +86,25 @@ public class CompanyController {
 		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
 	}
 	
+	@Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallBack")
 	@GetMapping("/build-info")
 	public ResponseEntity<String> getBuildInfo()
 	{
-		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+		logger.info("getBuildInfo() is Invoked");
+		throw new NullPointerException();
+		//return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+	}
+	
+	
+	public ResponseEntity<String> getBuildInfoFallBack(Throwable throwable) {
+		logger.info("getBuildInfoFallBack() is Invoked");
+		return ResponseEntity.status(HttpStatus.OK).body("0.9");
 	}
 	
 	@GetMapping("/contact-info")
 	public ResponseEntity<CompanyContactInfoDto> getContactInfo()
 	{
+		logger.info("Invoked contact-info of Company ");
 		return ResponseEntity.status(HttpStatus.OK).body(companyContactInfoDto);
 	}
 	
