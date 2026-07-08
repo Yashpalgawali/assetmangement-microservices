@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,8 +100,17 @@ public class DepartmentServImpl implements IDepartmentService {
 		
 		Department found = deptrepo.findById(deptId).orElseThrow(()-> new ResourceNotFoundException("Department", "ID", String.valueOf(deptId)));
 		DepartmentDto mapToDepartmentDto = DepartmentMapper.mapToDepartmentDto(found, new DepartmentDto());
-		Company comp = companyClient.getCompanyById(correlationId,found.getCompanyId()).getBody();
-		mapToDepartmentDto.setCompanyName(comp.getCompanyName());
+		ResponseEntity<Company> companyById = companyClient.getCompanyById(correlationId,found.getCompanyId());
+		
+		logger.info("Found company {} ",companyById);
+		
+		if(null != companyById) {
+			Company comp = companyById.getBody();
+			mapToDepartmentDto.setCompanyName(comp.getCompanyName());
+		}
+		else {
+			mapToDepartmentDto.setCompanyName("");
+		}
 		return mapToDepartmentDto;
 	}
 

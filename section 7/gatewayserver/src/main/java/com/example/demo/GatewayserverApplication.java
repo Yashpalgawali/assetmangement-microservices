@@ -12,22 +12,18 @@ import org.springframework.context.annotation.Bean;
 public class GatewayserverApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GatewayserverApplication.class, args);
+		SpringApplication.run(GatewayserverApplication.class, args);		
 	}
 
 	@Bean
 	RouteLocator assetManagementRouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
 		
-		
 		return routeLocatorBuilder.routes()
 						.route(p-> p.path("/assetmanagement/company/**")
 								.filters(f -> 
 											f.rewritePath("/assetmanagement/company/(?<segment>.*)", "/${segment}")
-											  .addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString() )
-											  .circuitBreaker(config -> config.setName("companyCircuitBreaker")
-													  						.setFallbackUri("forward:/contactSupport")
+											  .addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString() 
 													  )
-											   
 										)
 								.uri("lb://COMPANY"))
 						
@@ -35,7 +31,7 @@ public class GatewayserverApplication {
 								.filters(f -> 
 											f.rewritePath("/assetmanagement/department/(?<segment>.*)", "/${segment}")
 											.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString())
-											.circuitBreaker(config -> config.setName("departmentCircuitBreaker"))
+											.circuitBreaker(config -> config.setName("departmentCircuitBreaker").setFallbackUri("forward:/contactSupport"))
 										)
 								.uri("lb://DEPARTMENT"))
 						

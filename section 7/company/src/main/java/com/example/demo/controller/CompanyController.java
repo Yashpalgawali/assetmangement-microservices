@@ -76,7 +76,7 @@ public class CompanyController {
 	public ResponseEntity<ResponseDto> updateCompany(@RequestBody Company company )
 	{
 		compserv.updateCompany(company);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("company Updated Successfully by Vaishnavi", HttpStatus.OK));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("Company Updated Successfully by Vaishnavi", HttpStatus.OK));
 	}
 	
 	@GetMapping("/build-version")

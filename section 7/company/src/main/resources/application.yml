@@ -25,6 +25,10 @@ spring:
     password: guest
   config:
     import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    circuitbreaker:
+      resilience4j:
+        enabled: true
 
 # Eureka server   
 eureka:
@@ -74,3 +78,11 @@ logging:
     com:
       example:
         demo: DEBUG
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      sliding-window-size: 10
+      permitted-number-of-calls-in-half-open-state: 2
+      failure-rate-threshold: 50
+      wait-duration-in-open-state: 10000

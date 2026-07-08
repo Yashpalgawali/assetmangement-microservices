@@ -12,8 +12,10 @@ public class CompanyFallBack implements CompanyFeignClient {
 
 	@Override
 	public ResponseEntity<Company> getCompanyById(String correlationId, Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		  Company company = new Company();
+	      company.setCompanyName("");
+	      return ResponseEntity.ok(company);
 	}
 
 	@Override
