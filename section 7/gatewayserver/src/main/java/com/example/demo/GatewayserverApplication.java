@@ -3,12 +3,13 @@ package com.example.demo;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import org.apache.hc.core5.http.impl.Http1StreamListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
+import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpMethod;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
+import reactor.core.publisher.Mono;
 
 @SpringBootApplication
 public class GatewayserverApplication {
@@ -41,6 +43,7 @@ public class GatewayserverApplication {
 											f.rewritePath("/assetmanagement/department/(?<segment>.*)", "/${segment}")
 											.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString())
 											.circuitBreaker(config -> config.setName("departmentCircuitBreaker").setFallbackUri("forward:/contactSupport"))
+											.requestRateLimiter(config-> config.setRateLimiter(redisRateLimiter()).setKeyResolver(userKeyResolver()) )
 										)
 								.uri("lb://DEPARTMENT"))
 						
@@ -60,4 +63,14 @@ public class GatewayserverApplication {
 				  .timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(4)).build()).build()
 				);
 	}
+	@Bean
+	RedisRateLimiter redisRateLimiter() {
+		return new RedisRateLimiter(1,1,1);
+	}
+	
+	@Bean
+	KeyResolver userKeyResolver() {
+		return exchange -> Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst("user")).defaultIfEmpty("anonymous");
+	}
+	
 }
