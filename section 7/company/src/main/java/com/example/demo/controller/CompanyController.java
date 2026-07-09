@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,11 +89,11 @@ public class CompanyController {
 	
 	@Retry(name = "getBuildInfo", fallbackMethod = "getBuildInfoFallBack")
 	@GetMapping("/build-info")
-	public ResponseEntity<String> getBuildInfo()
+	public ResponseEntity<String> getBuildInfo() throws TimeoutException
 	{
 		logger.info("getBuildInfo() is Invoked");
-		throw new NullPointerException();
-		//return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+//		throw new NullPointerException();
+		return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
 	}
 	
 	

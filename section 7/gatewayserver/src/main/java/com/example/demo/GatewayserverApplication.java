@@ -51,8 +51,6 @@ public class GatewayserverApplication {
 										)
 								.uri("lb://DESIGNATION"))
 						.build();
-		
-
 	}
 	
 	@Bean
