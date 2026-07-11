@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import com.example.demo.dto.DepartmentDto;
 import com.example.demo.dto.ResponseDto;
 import com.example.demo.service.IDepartmentService;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping("department")
@@ -30,6 +32,8 @@ public class DepartmentController {
 	private final IDepartmentService deptserv;
 	
 	private final DepartmentContactInfoDto departmentContactInfoDto;
+	
+	private final Environment env;
 	
 	private final Logger logger = LoggerFactory.getLogger(DepartmentController.class);
 	
@@ -63,10 +67,24 @@ public class DepartmentController {
 		List<DepartmentDto> deptList= deptserv.getAllDepartments(correlationId);
 		return ResponseEntity.status(HttpStatus.OK).body(deptList);
 	}
-	
+
 	@GetMapping("/contact-info")
 	public ResponseEntity<DepartmentContactInfoDto> getBuildInfo(){
 		 
 		return ResponseEntity.status(HttpStatus.OK).body(departmentContactInfoDto);
+	}
+	
+
+	@RateLimiter(name = "getJavaVersion",fallbackMethod = "getJavaVersionFallBack")
+	@GetMapping("/java-version")
+	public ResponseEntity<String> getJavaVersion(){
+		 
+		return ResponseEntity.status(HttpStatus.OK).body(env.getProperty("JAVA_HOME"));
+	}
+	
+	
+	public ResponseEntity<String> getJavaVersionFallBack(Throwable throwable){
+		 
+		return ResponseEntity.status(HttpStatus.OK).body("Java 21");
 	}
 }
