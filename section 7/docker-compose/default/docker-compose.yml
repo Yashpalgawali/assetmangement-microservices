@@ -1,6 +1,18 @@
 services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      retries: 5
+      timeout: 10s
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+      
   companydb:
-    image: mysql
+#    image: mysql
     container_name: "companydb"
     ports:
       - "3306:3306"
@@ -11,7 +23,7 @@ services:
       service: microservice-db-config
 
   departmentdb:
-    image: mysql
+#    image: mysql
     container_name: "departmentdb"
     ports:
       - "3307:3306"
@@ -22,7 +34,6 @@ services:
       service: microservice-db-config
 
 #  designationdb:
-#    image: mysql
 #    container_name: "designationdb"
 #    ports:
 #      - "3308:3306"
@@ -65,11 +76,33 @@ services:
       file: common-config.yml
       service: microservice-base-config
 
+  eurekaserver:
+    image: "yashpalgawali/eurekaserver:v1"
+    ports:
+      - "8070:8070"
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s 
+      retries: 15
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
   company:
     image: "yashpalgawali/company:v1"
     container_name: "company-ms"
     ports:
       - "9091:9091"
+    healthcheck:
+      test: "curl --fail --silent localhost:9091/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s 
+      retries: 15
+      start_period: 10s
     depends_on:
       companydb:
         condition: service_healthy
@@ -78,13 +111,34 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
+
+#  company1:
+#    image: "yashpalgawali/company:v1"
+#    container_name: "company-ms1"
+#    ports:
+#      - "9191:9091"
+#    depends_on:
+#      companydb:
+#        condition: service_healthy
+#    environment:
+#      SPRING_APPLICATION_NAME: "company"
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
+#    extends:
+#      file: common-config.yml
+#      service: microservice-eureka-config
 
   department:
     image: "yashpalgawali/department:v1"
     container_name: "department-ms"
     ports:
       - "9092:9092"
+    healthcheck:
+      test: "curl --fail --silent localhost:9092/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s 
+      retries: 15
+      start_period: 10s
     depends_on:
       departmentdb:
         condition: service_healthy
@@ -93,13 +147,19 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://departmentdb:3306/departmentdb"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
   
 #  designation:
 #    image: "yashpalgawali/designation:v1"
 #    container_name: "designation-ms"
 #    ports:
 #      - "9093:9093"
+#     healthcheck:
+#       test: "curl --fail --silent localhost:9092/actuator/health/readiness | grep UP || exit 1"
+#       interval: 10s
+#       timeout: 5s 
+#       retries: 15
+#       start_period: 10s
 #    depends_on:
 #      designationdb:
 #        condition: service_healthy
@@ -108,7 +168,29 @@ services:
 #      SPRING_DATASOURCE_URL: "jdbc:mysql://designationdb:3306/designationdb"
 #    extends:
 #      file: common-config.yml
-#      service: microservice-configserver-config
+#      service: microservice-eureka-config
+
+  gatewayserver:
+    image: "yashpalgawali/gatewayserver:v1"
+    container_name: "gatewayserver-ms"
+    ports:
+      - "8072:8072"
+    depends_on:
+      company:
+        condition: service_healthy
+      department:
+        condition: service_healthy       
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "gatewayserver"
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_TIMEOUT: 1s
+      SPRING_DATA_REDIS_CONNECT-TIMEOUT: 2s
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
 
 networks:
   assetmanagement:

@@ -21,7 +21,7 @@ spring:
               lower-case-service-id: true
           httpclient:
             connect-timeout: 1000
-            response-timeout: 2s
+            response-timeout: 10s
 
 eureka:
   instance:
@@ -53,6 +53,9 @@ management:
     health:
       probes:
         enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}				
 
 info:
   app:

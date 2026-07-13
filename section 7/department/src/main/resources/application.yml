@@ -67,6 +67,9 @@ management:
     health:
       probes:
         enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 endpoints:
   shutdown:
@@ -86,9 +89,18 @@ resilience4j.circuitbreaker:
       failure-rate-threshold: 50
       wait-duration-in-open-state: 10000
 
+# Resilience RateLimiter
 resilience4j.ratelimiter:
   configs:
     default:
       timeout-duration: 1000
       limit-refresh-period: 5000
       limit-for-period: 1
+
+# Resilience Bulkhead
+#resilience4j.bulkhead:
+#  configs:
+#    default:
+#      max-concurrent-calls: 5
+        
+      

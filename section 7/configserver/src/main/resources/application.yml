@@ -50,6 +50,9 @@ management:
     health:
       probes:
         enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 encrypt:
   key: "0!*}y.J-m6lJ8aa>$f}|0bef8$!yy[;Q"
