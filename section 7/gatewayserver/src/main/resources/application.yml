@@ -13,15 +13,13 @@ spring:
       connect-timeout: 2s
   cloud:
     gateway:
-      server:
-        webflux:
-          discovery:
-            locator:
-              enabled: false
-              lower-case-service-id: true
-          httpclient:
-            connect-timeout: 1000
-            response-timeout: 10s
+      discovery:
+        locator:
+            enabled: false
+            lower-case-service-id: true
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 10s
   security:
     oauth2:
       resourceserver:
