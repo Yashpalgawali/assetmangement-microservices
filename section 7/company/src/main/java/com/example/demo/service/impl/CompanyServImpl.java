@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.dto.CompanyMessageDto;
 import com.example.demo.entity.Company;
 import com.example.demo.exception.GlobalException;
 import com.example.demo.exception.ResourceAlreadyExistsException;
@@ -25,6 +27,8 @@ public class CompanyServImpl implements ICompanyService {
 	
 	private final Logger logger = LoggerFactory.getLogger(CompanyServImpl.class);
 	
+	private final StreamBridge streamBridge;
+
 	@Override
 	public void saveCompany(Company company) {
 		
@@ -42,8 +46,17 @@ public class CompanyServImpl implements ICompanyService {
 		if(savedCompany == null) {
 			throw new GlobalException("Company "+company.getCompanyName()+" is not saved");
 		}
+		sendCommunication(savedCompany,company);
 	}
 
+	private void sendCommunication(Company savedcompany, Company company) {
+		var messageDto = new CompanyMessageDto(savedcompany.getCompanyId(), savedcompany.getCompanyName());
+		logger.info("Sending Communications request for the details {}" , messageDto);
+		
+		var result = streamBridge.send("sendCommunication-out-0", company);
+		logger.info("Is the Communication Sending request processed successfully? :{}" , result);
+	}
+	
 	@Override
 	public Company getCompanyById(Long id) {
 		 

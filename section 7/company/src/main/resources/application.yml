@@ -29,6 +29,11 @@ spring:
     circuitbreaker:
       resilience4j:
         enabled: true
+    stream:
+      bindings:
+        sendCommunication-out-0:
+          destination: send-communication
+
 
 # Eureka server   
 eureka:
