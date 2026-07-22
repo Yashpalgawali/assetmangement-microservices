@@ -23,14 +23,20 @@ spring:
     port: 5672
     username: guest
     password: guest
+    connection-timeout: 10s
   config:
     import: "optional:configserver:http://localhost:8071/"
   cloud:
     circuitbreaker:
       resilience4j:
         enabled: true
+    function:
+      definition: updateCommunication
     stream:
       bindings:
+        updateCommunication-in-0:
+          destination: communication-sent
+          group: ${spring.application.name}
         sendCommunication-out-0:
           destination: send-communication
 

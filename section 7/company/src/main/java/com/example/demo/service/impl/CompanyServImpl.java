@@ -46,14 +46,14 @@ public class CompanyServImpl implements ICompanyService {
 		if(savedCompany == null) {
 			throw new GlobalException("Company "+company.getCompanyName()+" is not saved");
 		}
-		sendCommunication(savedCompany,company);
+		sendCommunication(savedCompany);
 	}
 
-	private void sendCommunication(Company savedcompany, Company company) {
+	private void sendCommunication(Company savedcompany) {
 		var messageDto = new CompanyMessageDto(savedcompany.getCompanyId(), savedcompany.getCompanyName());
 		logger.info("Sending Communications request for the details {}" , messageDto);
 		
-		var result = streamBridge.send("sendCommunication-out-0", company);
+		var result = streamBridge.send("sendCommunication-out-0", savedcompany);
 		logger.info("Is the Communication Sending request processed successfully? :{}" , result);
 	}
 	
@@ -89,6 +89,19 @@ public class CompanyServImpl implements ICompanyService {
 		if(result < 0) {
 			throw new ResourceNotModifiedException("Company", "name", company.getCompanyName());
 		}
+	}
+
+	@Override
+	public boolean updateCommunicationStatus(Long companyId) {
+		boolean isUpdated = false;
+		if(companyId!=null) {
+			Company company = comprepo.findById(companyId).orElseThrow(()-> new ResourceNotFoundException("Company", "ID", ""+companyId));
+			
+			company.setCommunicationSw(true);
+			comprepo.save(company);
+			isUpdated= true;
+		}		
+		return isUpdated;
 	}
 
 }

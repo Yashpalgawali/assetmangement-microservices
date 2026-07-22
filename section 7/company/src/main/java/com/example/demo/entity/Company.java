@@ -35,4 +35,5 @@ public class Company {
 	@NotBlank(message = "Company Name can't be blank")
 	String companyName;
 	
+	boolean communicationSw;
 }

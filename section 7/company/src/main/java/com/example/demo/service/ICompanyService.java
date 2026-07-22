@@ -11,4 +11,5 @@ public interface ICompanyService {
 	public Company getCompanyByName(String name);
 	public List<Company> getAllCompanies();
 	public void updateCompany(Company company);
+	public boolean updateCommunicationStatus(Long companyId);
 }
