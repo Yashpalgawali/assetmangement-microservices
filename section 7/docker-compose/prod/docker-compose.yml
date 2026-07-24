@@ -395,6 +395,18 @@ services:
 #      file: common-config.yml
 #      service: microservice-eureka-config
 
+  message:
+    image: "yashpalgawali/message:v1"
+    container_name: "message-ms"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   gatewayserver:
     image: "yashpalgawali/gatewayserver:v1"
     container_name: "gatewayserver-ms"
