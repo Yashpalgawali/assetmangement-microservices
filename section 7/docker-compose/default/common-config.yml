@@ -24,15 +24,24 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-  
+
+  microservice-eureka-config:
+    extends:
+      microservice-configserver-config
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/ 
+
   microservice-db-config:
     extends:
       network-deploy-service
-    image: mysql
+    image: mysql:8.0
     healthcheck:
       test: ["CMD","mysqladmin","ping","-h","localhost"]
       timeout: 10s
-      retries: 20
+      retries: 50
       interval: 10s
       start_period: 5s
     environment:
