@@ -1,0 +1,63 @@
+server:
+  port: 9093
+
+spring:
+  application:
+    name: designation
+  profiles:
+    active: "prod"
+  datasource:
+    username: root
+    password: root
+#    url: jdbc:mysql://host.docker.internal:3399/designationdb
+    url: jdbc:mysql://localhost:3308/designationdb
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: always
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  config:
+#    import: "optional:configserver:http://host.docker.internal:8071/"
+    import: "optional:configserver:http://localhost:8071/"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    access:
+      default: unrestricted
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  endpoint:
+    shutdown:
+      access: unrestricted
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+endpoints:
+  shutdown:
+    enabled: true
+
+logging:
+  level:
+    com:
+      example:
+        demo: DEBUG

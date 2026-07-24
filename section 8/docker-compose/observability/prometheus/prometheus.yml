@@ -1,0 +1,29 @@
+global:
+  scrape_interval:     5s # Set the scrape interval to every 5 seconds.
+  evaluation_interval: 5s # Evaluate rules every 5 seconds.
+
+scrape_configs:
+  - job_name: 'company'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'company:9091' ]
+  - job_name: 'department'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'department:9092' ]
+  - job_name: 'designation'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'designation:9093' ]
+  - job_name: 'gatewayserver'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'gatewayserver:8072' ]
+  - job_name: 'eurekaserver'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'eurekaserver:8070' ]
+  - job_name: 'configserver'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'configserver:8071' ]

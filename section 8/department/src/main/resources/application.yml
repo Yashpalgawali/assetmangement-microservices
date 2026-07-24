@@ -1,0 +1,110 @@
+server:
+  port: 9092
+spring:
+  application:
+    name: department
+  profiles:
+    active: "prod"
+  datasource:
+    url: jdbc:mysql://localhost:3399/departmentdb
+#    url: jdbc:mysql://localhost:3307/departmentdb
+#    url: jdbc:mysql://host.docker.internal:3399/departmentdb
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  sql:
+    init:
+      mode: always       
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+    stream:
+      bindings:
+        sendCommunication-out-0:
+          destination: send-communication        
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest 
+
+#Eureka server config
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+
+info:
+  app:
+    name: "department"
+    version: "1.0.0"
+    description: "Asset Management Department Service"
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    access:
+      default: unrestricted
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  endpoint:
+    shutdown:
+      access: unrestricted
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+endpoints:
+  shutdown:
+    enabled: true
+
+logging:
+  level:
+    com:
+      example:
+        demo: DEBUG
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      sliding-window-size: 10
+      permitted-number-of-calls-in-half-open-state: 2
+      failure-rate-threshold: 50
+      wait-duration-in-open-state: 10000
+
+# Resilience RateLimiter
+resilience4j.ratelimiter:
+  configs:
+    default:
+      timeout-duration: 1000
+      limit-refresh-period: 5000
+      limit-for-period: 1
+
+# Resilience Bulkhead
+#resilience4j.bulkhead:
+#  configs:
+#    default:
+#      max-concurrent-calls: 5
+        
+      
