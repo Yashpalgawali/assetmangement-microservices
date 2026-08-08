@@ -290,6 +290,19 @@ services:
       file: common-config.yml
       service: microservice-db-config
 
+  assetdb:
+    container_name: "assetdb"
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: assetdb
+    volumes:
+      - assetdb:/var/lib/mysql
+    extends:
+     file: common-config.yml
+     service: microservice-db-config
+  
+
 #  designationdb:
 #    container_name: "designationdb"
 #    ports:
@@ -411,7 +424,26 @@ services:
     extends:
       file: common-config.yml
       service: microservice-eureka-config
-  
+
+  asset:
+    image: "yashpalgawali/asset:v1"
+    container_name: "asset-ms"
+    healthcheck:
+      test: "curl --fail --silent localhost:9094/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      start_period: 10s
+      timeout: 5s
+      retries: 15
+    depends_on:
+      assetdb:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "asset"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://assetdb:3306/assetdb"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
 #  designation:
 #    image: "yashpalgawali/designation:v1"
 #    container_name: "designation-ms"
@@ -454,7 +486,7 @@ services:
       company:
         condition: service_healthy
       department:
-        condition: service_healthy       
+        condition: service_healthy
       redis:
         condition: service_healthy
     environment:
@@ -471,6 +503,7 @@ services:
 volumes:
   companydb:
   departmentdb:
+  assetdb:
 
 networks:
   assetmanagement:
