@@ -265,42 +265,54 @@ services:
     extends:
       file: common-config.yml
       service: network-deploy-service
-      
-  companydb:
-    container_name: "companydb"
+
+  assetmanagementdb:
+    container_name: "assetmanagementdb"
     ports:
       - "3306:3306"
     volumes:
-      - companydb:/var/lib/mysql
+      - assetmanagementdb:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: companydb
+      MYSQL_DATABASE: assetmanagementdb
     extends:
       file: common-config.yml
       service: microservice-db-config
 
-  departmentdb:
-    container_name: "departmentdb"
-    ports:
-      - "3307:3306"
-    volumes:
-      - departmentdb:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: departmentdb
-    extends:
-      file: common-config.yml
-      service: microservice-db-config
-
-  assetdb:
-    container_name: "assetdb"
-    ports:
-      - "3308:3306"
-    environment:
-      MYSQL_DATABASE: assetdb
-    volumes:
-      - assetdb:/var/lib/mysql
-    extends:
-     file: common-config.yml
-     service: microservice-db-config
+#  companydb:
+#    container_name: "companydb"
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - companydb:/var/lib/mysql
+#    environment:
+#      MYSQL_DATABASE: companydb
+#    extends:
+#      file: common-config.yml
+#      service: microservice-db-config
+#
+#  departmentdb:
+#    container_name: "departmentdb"
+#    ports:
+#      - "3307:3306"
+#    volumes:
+#      - departmentdb:/var/lib/mysql
+#    environment:
+#      MYSQL_DATABASE: departmentdb
+#    extends:
+#      file: common-config.yml
+#      service: microservice-db-config
+#
+#  assetdb:
+#    container_name: "assetdb"
+#    ports:
+#      - "3308:3306"
+#    environment:
+#      MYSQL_DATABASE: assetdb
+#    volumes:
+#      - assetdb:/var/lib/mysql
+#    extends:
+#     file: common-config.yml
+#     service: microservice-db-config
   
 
 #  designationdb:
@@ -374,13 +386,15 @@ services:
       retries: 15
       start_period: 10s
     depends_on:
-      companydb:
+#      companydb:
+      assetmanagementdb:
         condition: service_healthy
       kafka:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "company"
-      SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://assetmanagementdb:3306/assetmanagementdb"
       SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
@@ -413,13 +427,14 @@ services:
       retries: 15
       start_period: 10s
     depends_on:
-      departmentdb:
+#      departmentdb:
+      assetmanagementdb:
         condition: service_healthy
       kafka:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "department"
-      SPRING_DATASOURCE_URL: "jdbc:mysql://departmentdb:3306/departmentdb"
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://departmentdb:3306/departmentdb"
       SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
@@ -435,11 +450,12 @@ services:
       timeout: 5s
       retries: 15
     depends_on:
-      assetdb:
+#      assetdb:
+      assetmanagementdb: 
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "asset"
-      SPRING_DATASOURCE_URL: "jdbc:mysql://assetdb:3306/assetdb"
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://assetdb:3306/assetdb"
     extends:
       file: common-config.yml
       service: microservice-eureka-config
@@ -501,9 +517,10 @@ services:
       service: microservice-eureka-config
 
 volumes:
-  companydb:
-  departmentdb:
-  assetdb:
+  assetmanagementdb:
+#  companydb:
+#  departmentdb:
+#  assetdb:
 
 networks:
   assetmanagement:

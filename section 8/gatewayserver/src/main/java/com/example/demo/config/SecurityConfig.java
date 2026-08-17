@@ -23,7 +23,8 @@ public class SecurityConfig {
 	        serverHttpSecurity.authorizeExchange(exchanges -> exchanges.pathMatchers(HttpMethod.GET).permitAll()
 	        		.pathMatchers("/assetmanagement/company/**").hasRole("COMPANY")
 	        		.pathMatchers("/assetmanagement/department/**").hasRole("DEPARTMENT")
-	        		.pathMatchers("/assetmanagement/designation/**").hasRole("DESIGNATION"))
+	        		.pathMatchers("/assetmanagement/designation/**").hasRole("DESIGNATION")
+	        		.pathMatchers("/assetmanagement/asset/**").hasRole("ASSET"))
 	        .oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtSpec.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
 	        
 	        serverHttpSecurity.csrf(csrfSpec -> csrfSpec.disable());

@@ -8,7 +8,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://host.docker.internal:3399/assetmanagement_micro_db
+    url: jdbc:mysql://localhost:3399/assetmanagement_micro_db
   sql:
     init:
       mode: always

@@ -45,5 +45,7 @@ services:
       interval: 10s
       start_period: 5s
     environment:
-      MYSQL_ROOT_PASSWORD: root		
+      MYSQL_ROOT_PASSWORD: root
+      SPRING_DATASOURCE_URL: "jdbc:mysql://assetmanagementdb:3306/assetmanagementdb"
+
   

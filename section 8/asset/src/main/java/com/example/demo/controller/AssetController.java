@@ -19,7 +19,7 @@ import com.example.demo.service.asset.IAssetService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("asset/api")
+@RequestMapping("/asset/api")
 @RequiredArgsConstructor
 public class AssetController {
 
