@@ -53,6 +53,7 @@ public class GatewayserverApplication {
 											.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString() )
 										)
 								.uri("lb://DESIGNATION"))
+						
 						.route(p-> p.path("/assetmanagement/asset/**")
 								.filters(f -> 
 											f.rewritePath("/assetmanagement/asset/(?<segment>.*)", "/${segment}")

@@ -398,8 +398,9 @@ services:
       SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
-      service: microservice-eureka-config
-
+      service: microservice-common-config
+#      service: microservice-eureka-config
+       
 #  company1:
 #    image: "yashpalgawali/company:v1"
 #    container_name: "company-ms1"
@@ -418,27 +419,24 @@ services:
   department:
     image: "yashpalgawali/department:v1"
     container_name: "department-ms"
-#    ports:
-#      - "9092:9092"
     healthcheck:
-      test: "curl --fail --silent localhost:9092/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:9192/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s 
       retries: 15
       start_period: 10s
     depends_on:
-#      departmentdb:
       assetmanagementdb:
         condition: service_healthy
       kafka:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "department"
-#      SPRING_DATASOURCE_URL: "jdbc:mysql://departmentdb:3306/departmentdb"
       SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
-      service: microservice-eureka-config
+      service: microservice-common-config
+#      service: microservice-eureka-config
 
   asset:
     image: "yashpalgawali/asset:v1"
@@ -455,9 +453,11 @@ services:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "asset"
+#      SPRING_DATASOURCE_URL: "jdbc:mysql://assetmanagementdb:3306/assetmanagementdb"
     extends:
       file: common-config.yml
-      service: microservice-eureka-config
+      service: microservice-common-config
+#      service: microservice-eureka-config
 
 #  designation:
 #    image: "yashpalgawali/designation:v1"
@@ -504,8 +504,8 @@ services:
         condition: service_healthy
       department:
         condition: service_healthy
-      asset:
-        condition: service_healthy          
+#      asset:
+#        condition: service_healthy          
     environment:
       SPRING_APPLICATION_NAME: "gatewayserver"
       SPRING_DATA_REDIS_HOST: redis

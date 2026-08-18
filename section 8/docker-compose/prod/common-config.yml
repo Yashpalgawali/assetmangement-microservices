@@ -32,7 +32,15 @@ services:
       eurekaserver:
         condition: service_healthy
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/ 
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+
+  microservice-common-config:
+    extends:
+      microservice-eureka-config
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://assetmanagementdb:3306/assetmanagementdb"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "root"
 
   microservice-db-config:
     extends:

@@ -2,38 +2,48 @@ server:
   port: 9192
 spring:
   application:
-    name: department
+    name: "department"
   profiles:
     active: "prod"
   datasource:
-    url: jdbc:mysql://localhost:3399/assetmanagement_micro_db
     username: root
     password: root
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+    url: jdbc:mysql://localhost:3399/assetmanagement_micro_db
   sql:
     init:
-      mode: always       
-  config:
-    import: "optional:configserver:http://localhost:8071/"
-  cloud:
-    openfeign:
-      circuitbreaker:
-        enabled: true
-    stream:
-      bindings:
-        sendCommunication-out-0:
-          destination: send-communication
+      mode: always
+  jpa:    
+    show-sql: true
+    hibernate:
+      ddl-auto: update    
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
     connection-timeout: 10s
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    circuitbreaker:
+      resilience4j:
+        enabled: true
+    function:
+      definition: updateCommunication
+    stream:
+      default-binder: kafka
+      bindings:
+        updateCommunication-in-0:
+          destination: communication-sent
+          group: ${spring.application.name}
+        sendCommunication-out-0:
+          destination: send-communication
+      kafka:
+        binder:
+          brokers:
+          - localhost:9092
 
-#Eureka server config
+# Eureka server   
 eureka:
   instance:
     prefer-ip-address: true
@@ -43,12 +53,13 @@ eureka:
     service-url:
       defaultZone: http://localhost:8070/eureka/
 
+# This information can be seen in the Eureka Dashboard
 info:
   app:
-    name: "department"
+    name: "Department"
+    description: "Asset Management Department Application"
     version: "1.0.0"
-    description: "Asset Management Department Service"
-  
+
 management:
   endpoints:
     web:

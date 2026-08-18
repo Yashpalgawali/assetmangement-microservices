@@ -4,7 +4,7 @@ spring:
   application:
     name: asset
   datasource:
-    url: jdbc:mysql://localhost:3399/assetdb
+    url: jdbc:mysql://localhost:3399/assetmanagement_micro_db
     username: root
     password: root
   sql:
