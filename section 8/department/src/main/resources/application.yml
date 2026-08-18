@@ -1,14 +1,12 @@
 server:
-  port: 9092
+  port: 9192
 spring:
   application:
     name: department
   profiles:
     active: "prod"
   datasource:
-    url: jdbc:mysql://localhost:3399/departmentdb
-#    url: jdbc:mysql://localhost:3307/departmentdb
-#    url: jdbc:mysql://host.docker.internal:3399/departmentdb
+    url: jdbc:mysql://localhost:3399/assetmanagement_micro_db
     username: root
     password: root
   jpa:
@@ -27,12 +25,13 @@ spring:
     stream:
       bindings:
         sendCommunication-out-0:
-          destination: send-communication        
+          destination: send-communication
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
-    password: guest 
+    password: guest
+    connection-timeout: 10s
 
 #Eureka server config
 eureka:

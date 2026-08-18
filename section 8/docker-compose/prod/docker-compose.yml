@@ -455,7 +455,6 @@ services:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "asset"
-#      SPRING_DATASOURCE_URL: "jdbc:mysql://assetdb:3306/assetdb"
     extends:
       file: common-config.yml
       service: microservice-eureka-config
@@ -499,12 +498,14 @@ services:
     ports:
       - "8072:8072"
     depends_on:
+      redis:
+        condition: service_healthy
       company:
         condition: service_healthy
       department:
         condition: service_healthy
-      redis:
-        condition: service_healthy
+      asset:
+        condition: service_healthy          
     environment:
       SPRING_APPLICATION_NAME: "gatewayserver"
       SPRING_DATA_REDIS_HOST: redis
@@ -512,6 +513,13 @@ services:
       SPRING_DATA_REDIS_TIMEOUT: 1s
       SPRING_DATA_REDIS_CONNECT-TIMEOUT: 2s
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:8080/realms/master/protocol/openid-connect/certs"
+# ═══ Keycloak overrides for Docker ═══
+      KEYCLOAK_AUTH-SERVER-URL: "http://keycloak:8080"
+      KEYCLOAK_REALM: "master"
+      KEYCLOAK_CLIENT-ID: "assetmanagement-callcenter-react"
+      KEYCLOAK_ADMIN_CLIENT-ID: "admin-cli"
+      KEYCLOAK_ADMIN_CLIENT-SECRET: "0z70wbyr60b6GPLevxfrXBhbVPlCVKpn"
+      KEYCLOAK_DEFAULT-ROLE: "USER"
     extends:
       file: common-config.yml
       service: microservice-eureka-config

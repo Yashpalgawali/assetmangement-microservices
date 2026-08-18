@@ -26,6 +26,18 @@ spring:
         jwt:
           jwk-set-uri: "http://localhost:7080/realms/master/protocol/openid-connect/certs"
 
+# ═══════════════════════════════════════════════
+#  Keycloak Admin API config (for user registration)
+# ═══════════════════════════════════════════════
+keycloak:
+  auth-server-url: http://localhost:7080
+  realm: master
+  client-id: assetmanagement-callcenter-react
+  admin:
+    client-id: admin-cli
+    client-secret: 0z70wbyr60b6GPLevxfrXBhbVPlCVKpn   # ← from Keycloak admin-cli Credentials tab
+  default-role: USER
+
 eureka:
   instance:
     prefer-ip-address: true

@@ -18,24 +18,24 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-	  @Bean
-	  SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
-	        serverHttpSecurity.authorizeExchange(exchanges -> exchanges.pathMatchers(HttpMethod.GET).permitAll()
-	        		.pathMatchers("/assetmanagement/company/**").hasRole("COMPANY")
-	        		.pathMatchers("/assetmanagement/department/**").hasRole("DEPARTMENT")
-	        		.pathMatchers("/assetmanagement/designation/**").hasRole("DESIGNATION")
-	        		.pathMatchers("/assetmanagement/asset/**").hasRole("ASSET"))
-	        .oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtSpec.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
-	        
-	        serverHttpSecurity.csrf(csrfSpec -> csrfSpec.disable());
-	        return serverHttpSecurity.build();
-	    }
-	  
-	  private Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
-	        JwtAuthenticationConverter jwtAuthenticationConverter =
-	                new JwtAuthenticationConverter();
-	        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter
-	                (new KeyCloakRoleConverter());
-	        return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
-	    }
+	@Bean
+	SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
+		serverHttpSecurity
+				.authorizeExchange(exchanges -> exchanges.pathMatchers(HttpMethod.GET).permitAll()
+						.pathMatchers("/assetmanagement/company/**").hasAnyRole("USER", "ADMIN")
+						.pathMatchers("/assetmanagement/department/**").hasAnyRole("USER", "ADMIN")
+						.pathMatchers("/assetmanagement/designation/**").hasAnyRole("USER", "ADMIN")
+						.pathMatchers("/assetmanagement/asset/**").hasAnyRole("USER", "ADMIN"))
+				.oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec
+						.jwt(jwtSpec -> jwtSpec.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
+
+		serverHttpSecurity.csrf(csrfSpec -> csrfSpec.disable());
+		return serverHttpSecurity.build();
+	}
+
+	private Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
+		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeyCloakRoleConverter());
+		return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
+	}
 }
