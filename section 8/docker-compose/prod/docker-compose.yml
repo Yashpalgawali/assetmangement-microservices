@@ -448,16 +448,31 @@ services:
       timeout: 5s
       retries: 15
     depends_on:
-#      assetdb:
       assetmanagementdb: 
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "asset"
-#      SPRING_DATASOURCE_URL: "jdbc:mysql://assetmanagementdb:3306/assetmanagementdb"
     extends:
       file: common-config.yml
       service: microservice-common-config
-#      service: microservice-eureka-config
+
+  employee:
+    image: "yashpalgawali/employee:v1"
+    container_name: "employee-ms"
+    healthcheck:
+      test: "curl --fail --silent localhost:9590/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      start_period: 10s
+      timeout: 5s
+      retries: 15
+    depends_on:
+      assetmanagementdb: 
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "employee"
+    extends:
+      file: common-config.yml
+      service: microservice-common-config
 
 #  designation:
 #    image: "yashpalgawali/designation:v1"
