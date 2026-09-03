@@ -23,7 +23,15 @@ import reactor.core.publisher.Mono;
 public class GatewayserverApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GatewayserverApplication.class, args);		
+		SpringApplication.run(GatewayserverApplication.class, args);
+//		int num =1;
+//		 for(int i=1;i<=5;i++) {
+//			 for(int j=1;j>=i;j--) {
+//				 System.err.print(num++ +"\t");
+//			 }
+//			 System.err.println();
+//		 }
+		  
 	}
 
 	@Bean
