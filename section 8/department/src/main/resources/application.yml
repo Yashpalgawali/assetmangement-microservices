@@ -31,17 +31,28 @@ spring:
     function:
       definition: updateCommunication
     stream:
-      default-binder: kafka
       bindings:
         updateCommunication-in-0:
           destination: communication-sent
           group: ${spring.application.name}
         sendCommunication-out-0:
           destination: send-communication
-      kafka:
-        binder:
-          brokers:
-          - localhost:9092
+        
+#				For Kafka
+#    function:
+#      definition: updateCommunication
+#    stream:
+#      default-binder: kafka
+#      bindings:
+#        updateCommunication-in-0:
+#          destination: communication-sent
+#          group: ${spring.application.name}
+#        sendCommunication-out-0:
+#          destination: send-communication
+#      kafka:
+#        binder:
+#          brokers:
+#          - localhost:9092
 
 # Eureka server   
 eureka:

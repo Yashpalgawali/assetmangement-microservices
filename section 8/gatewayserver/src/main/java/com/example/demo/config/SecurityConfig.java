@@ -48,7 +48,7 @@ public class SecurityConfig {
                 "http://192.168.0.219:3000",
                 "http://localhost:3000"
         ));
-        
+
         // Or if you want to allow any origin in dev:
         // configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));

@@ -82,16 +82,16 @@
 			<artifactId>spring-cloud-stream</artifactId>
 		</dependency>
 		<!--		When Using RabbitMQ as Message Broker-->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.cloud</groupId>-->
-		<!--			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>-->
-		<!--		</dependency>-->
-
-		<!--		When Using Kafka as Message Broker-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
+			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
 		</dependency>
+
+		<!--		When Using Kafka as Message Broker-->
+		<!--		<dependency>-->
+		<!--			<groupId>org.springframework.cloud</groupId>-->
+		<!--			<artifactId>spring-cloud-stream-binder-kafka</artifactId>-->
+		<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-bus-amqp</artifactId>

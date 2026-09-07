@@ -7,30 +7,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.demo.dto.CompanyMessageDto;
+import com.example.demo.dto.DepartmentMessageDto;
 
 @Configuration
 public class MessageFunctions {
-
-	private static Logger logger = LoggerFactory.getLogger(MessageFunctions.class);
-
-//	For sending Email
+ 
+	private static final Logger logger = LoggerFactory.getLogger(MessageFunctions.class);
+	
 	@Bean
-	Function<CompanyMessageDto, CompanyMessageDto> email() {
+	Function<DepartmentMessageDto, DepartmentMessageDto> email(){
 		
-		return companyMessageDto ->  {
-			logger.info("Sending email with details {} ",companyMessageDto);
-			return companyMessageDto;
-		};
+		return departmentMessageDto -> {
+			logger.info("Sending email with the details :- "+departmentMessageDto.toString());
+			return departmentMessageDto;
+		} ;
 	}
 	
-//	For sending SMS
 	@Bean
-	Function<CompanyMessageDto, Long> sms() {
+	Function<DepartmentMessageDto, Long> sms(){
 		
-		return companyMessageDto ->  {
-			logger.info("Sending SMS with details {} ",companyMessageDto);
-			return companyMessageDto.companyId();
-		};
+		return departmentMessageDto -> {
+			logger.info("Sending SMS with the details :- "+departmentMessageDto.toString());
+			return departmentMessageDto.departmentId();
+		} ;
 	}
+	
+	
 }
