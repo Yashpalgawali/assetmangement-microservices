@@ -11,26 +11,25 @@ import com.example.demo.dto.DepartmentMessageDto;
 
 @Configuration
 public class MessageFunctions {
- 
+
 	private static final Logger logger = LoggerFactory.getLogger(MessageFunctions.class);
-	
+
 	@Bean
-	Function<DepartmentMessageDto, DepartmentMessageDto> email(){
-		
+	Function<DepartmentMessageDto, DepartmentMessageDto> email() {
+
 		return departmentMessageDto -> {
-			logger.info("Sending email with the details :- "+departmentMessageDto.toString());
+			logger.info("Sending email with the details :- " + departmentMessageDto.toString());
 			return departmentMessageDto;
-		} ;
+		};
 	}
-	
+
 	@Bean
-	Function<DepartmentMessageDto, Long> sms(){
-		
+	Function<DepartmentMessageDto, Long> sms() {
+
 		return departmentMessageDto -> {
-			logger.info("Sending SMS with the details :- "+departmentMessageDto.toString());
+			logger.info("Sending SMS with the details :- " + departmentMessageDto.toString());
 			return departmentMessageDto.departmentId();
-		} ;
+		};
 	}
-	
-	
+
 }

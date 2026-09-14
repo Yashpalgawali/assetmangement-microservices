@@ -28,13 +28,15 @@ public class AssettypeServImpl implements IAssetTypeService {
 	@Override
 	public void createAssetType(AssetTypeDto assetTypeDto) {
 
+		System.err.println("Asset type DTO Object is "+assetTypeDto.toString());
 		Optional<AssetType> atype = atyperepo.findByAssetType(assetTypeDto.getAssetType());
 		if (atype.isPresent()) {
 			throw new ResourceAlreadyExistsException("Asset type " + assetTypeDto.getAssetType() + " already exists");
 		}
 
 		AssetType mappedAssetType = AssetTypeMapper.maptToAssetType(assetTypeDto, new AssetType());
-
+		mappedAssetType.setAssetTypeId(null); 
+		
 		AssetType savedAssetType = atyperepo.save(mappedAssetType);
 		if (savedAssetType == null) {
 			throw new GlobalException("Asset type " + assetTypeDto.getAssetType() + " is not created");

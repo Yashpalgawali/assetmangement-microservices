@@ -24,67 +24,74 @@ import com.example.demo.service.IDepartmentService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 
-@RequestMapping("department")
+@RequestMapping("api")
 @RestController
 @RequiredArgsConstructor
 public class DepartmentController {
 
 	private final IDepartmentService deptserv;
-	
+
 	private final DepartmentContactInfoDto departmentContactInfoDto;
-	
+
 	private final Environment env;
-	
+
 	private final Logger logger = LoggerFactory.getLogger(DepartmentController.class);
-	
+
 	@PostMapping("/")
-	public ResponseEntity<ResponseDto> createDepartment(@RequestBody DepartmentDto deptDto){
+	public ResponseEntity<ResponseDto> createDepartment(@RequestBody DepartmentDto deptDto) {
 		deptserv.createDepartment(deptDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("Department "+deptDto.getDepartmentName()+" is created successfully", HttpStatus.CREATED));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(
+				"Department " + deptDto.getDepartmentName() + " is created successfully", HttpStatus.CREATED));
 	}
-	
+
 	@PutMapping("/")
-	public ResponseEntity<ResponseDto> updateDepartment(@RequestBody DepartmentDto deptDto){
+	public ResponseEntity<ResponseDto> updateDepartment(@RequestBody DepartmentDto deptDto) {
 		deptserv.updateDepartment(deptDto);
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto("Department "+deptDto.getDepartmentName()+" is updated successfully", HttpStatus.OK));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(
+				"Department " + deptDto.getDepartmentName() + " is updated successfully", HttpStatus.OK));
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<DepartmentDto> getDepartmentDto(@RequestHeader("assetmanagement-correlation-id") String correlationId ,@PathVariable Long id){
-		DepartmentDto departmentDto = deptserv.getDepartmentById(correlationId,id);
+	public ResponseEntity<DepartmentDto> getDepartmentDto(
+			@RequestHeader("assetmanagement-correlation-id") String correlationId, @PathVariable Long id) {
+		DepartmentDto departmentDto = deptserv.getDepartmentById(correlationId, id);
 		return ResponseEntity.status(HttpStatus.OK).body(departmentDto);
 	}
-	
+
 	@GetMapping("/name/{name}")
-	public ResponseEntity<DepartmentDto> getDepartmentDto(@RequestHeader("assetmanagement-correlation-id") String correlationId ,@PathVariable String name){
-		DepartmentDto departmentDto = deptserv.getDepartmentByDeptName(correlationId,name);
+	public ResponseEntity<DepartmentDto> getDepartmentDto(
+			@RequestHeader("assetmanagement-correlation-id") String correlationId, @PathVariable String name) {
+		DepartmentDto departmentDto = deptserv.getDepartmentByDeptName(correlationId, name);
 		return ResponseEntity.status(HttpStatus.OK).body(departmentDto);
 	}
-	
+
 	@GetMapping("/")
-	public ResponseEntity<List<DepartmentDto>> getAllDepartmentsDto(@RequestHeader("assetmanagement-correlation-id") String correlationId ){
-		logger.debug("assetmanagement-correlation-id {} ",correlationId);
-		List<DepartmentDto> deptList= deptserv.getAllDepartments(correlationId);
+	public ResponseEntity<List<DepartmentDto>> getAllDepartmentsDto(
+			@RequestHeader("assetmanagement-correlation-id") String correlationId) {
+		logger.debug("assetmanagement-correlation-id {} ", correlationId);
+		List<DepartmentDto> deptList = deptserv.getAllDepartments(correlationId);
+		System.err.println("DEPT LIST ");
+		
+		deptList.forEach(System.err::println);
+		
 		return ResponseEntity.status(HttpStatus.OK).body(deptList);
 	}
 
 	@GetMapping("/contact-info")
-	public ResponseEntity<DepartmentContactInfoDto> getBuildInfo(){
-		 
+	public ResponseEntity<DepartmentContactInfoDto> getBuildInfo() {
+
 		return ResponseEntity.status(HttpStatus.OK).body(departmentContactInfoDto);
 	}
-	
 
-	@RateLimiter(name = "getJavaVersion",fallbackMethod = "getJavaVersionFallBack")
+	@RateLimiter(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallBack")
 	@GetMapping("/java-version")
-	public ResponseEntity<String> getJavaVersion(){
-		 
+	public ResponseEntity<String> getJavaVersion() {
+
 		return ResponseEntity.status(HttpStatus.OK).body(env.getProperty("JAVA_HOME"));
 	}
-	
-	
-	public ResponseEntity<String> getJavaVersionFallBack(Throwable throwable){
-		 
+
+	public ResponseEntity<String> getJavaVersionFallBack(Throwable throwable) {
+
 		return ResponseEntity.status(HttpStatus.OK).body("Java 21");
 	}
 }

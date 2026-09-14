@@ -19,7 +19,7 @@ import com.example.demo.service.asset.IAssetService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/asset/api")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AssetController {
 
@@ -50,7 +50,7 @@ public class AssetController {
 		return ResponseEntity.status(HttpStatus.OK).body(asset);
 	}
 
-	@GetMapping("/{name}")
+	@GetMapping("/name/{name}")
 	public ResponseEntity<AssetDto> getAssetByName(@PathVariable String name) {
 
 		var asset = assetServ.getAssetByName(name);

@@ -25,8 +25,11 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
+		
 		serverHttpSecurity
-				.authorizeExchange(exchanges -> exchanges.pathMatchers(HttpMethod.GET).permitAll()
+				.cors(corsSpec -> corsSpec.configurationSource(corsConfigurationSource()))
+				.authorizeExchange(exchanges -> exchanges
+
 						.pathMatchers("/assetmanagement/company/**").hasAnyRole("USER", "ADMIN")
 						.pathMatchers("/assetmanagement/department/**").hasAnyRole("USER", "ADMIN")
 						.pathMatchers("/assetmanagement/designation/**").hasAnyRole("USER", "ADMIN")

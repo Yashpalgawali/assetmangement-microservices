@@ -9,12 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.AssetDto;
 import com.example.demo.entity.Asset;
+import com.example.demo.entity.AssetType;
 import com.example.demo.exception.GlobalException;
 import com.example.demo.exception.ResourceAlreadyExistsException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.ResourceNotModifiedException;
 import com.example.demo.mapper.AssetMapper;
 import com.example.demo.repository.AssetRepository;
+import com.example.demo.repository.AssetTypeRepository;
 import com.example.demo.service.asset.IAssetService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class AssetServImpl implements IAssetService {
 
 	private final AssetRepository assetrepo;
+	
+	private final AssetTypeRepository assetTypeRepo;
 	
 	@Override
 	public void createAsset(AssetDto assetDto) {
@@ -35,8 +39,13 @@ public class AssetServImpl implements IAssetService {
 		 }
 		 
 		 Asset mappedAsset = AssetMapper.mapToAsset(assetDto, new Asset());
+		 mappedAsset.setAssetId(null);
+		 
+		 Optional<AssetType> foundAssetType= assetTypeRepo.findById(assetDto.getAssetType().getAssetTypeId());
+		 mappedAsset.setAssetType(foundAssetType.get());
 		 
 		 Asset savedAsset =  assetrepo.save(mappedAsset);
+		 
 		 if(savedAsset== null) {
 			 throw new GlobalException("Asset  "+assetDto.getAssetName()+" is not created");
 		 }		
@@ -44,17 +53,15 @@ public class AssetServImpl implements IAssetService {
 
 	@Override
 	public AssetDto getAssetById(Long id) {
-		
+
 		Asset found = assetrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", ""+id) );
-		
 		return AssetMapper.mapToAssetDto(found, new AssetDto());
 	}
 
 	@Override
 	public AssetDto getAssetByName(String name) {
-		
+
 		Asset found = assetrepo.findByAssetName(name).orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", name) );
-		
 		return AssetMapper.mapToAssetDto(found, new AssetDto());
 	}
 
@@ -65,13 +72,14 @@ public class AssetServImpl implements IAssetService {
 		if(assetList.size()<0) {
 			throw new ResourceNotFoundException("Asset ", "List", "asset ");
 		}
-		List<AssetDto> assetTypeDtoList = assetList.stream().map(a-> {
+		List<AssetDto> assetDtoList = assetList.stream().map(a-> {
+			a.getAssetType();
 			AssetDto mapped = AssetMapper.mapToAssetDto(a, new AssetDto());
 			
 			return mapped;
 			
 		}).collect(Collectors.toList());
-		return assetTypeDtoList;
+		return assetDtoList;
 	}
 
 	@Override

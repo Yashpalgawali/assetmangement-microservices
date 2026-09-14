@@ -31,61 +31,57 @@ public class GatewayserverApplication {
 //			 }
 //			 System.err.println();
 //		 }
-		  
+
 	}
 
 	@Bean
 	RouteLocator assetManagementRouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
-		
+
 		return routeLocatorBuilder.routes()
-						.route(p-> p.path("/assetmanagement/company/**")
-								.filters(f -> 
-											f.rewritePath("/assetmanagement/company/(?<segment>.*)", "/${segment}")
-											  .addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString())
-											  .retry(retryConfig -> retryConfig.setRetries(3).setMethods(HttpMethod.GET).setBackoff(Duration.ofMillis(100),Duration.ofMillis(1000),2, true))
-										)
-								.uri("lb://COMPANY"))
-						
-						.route(p-> p.path("/assetmanagement/department/**")
-								.filters(f -> 
-											f.rewritePath("/assetmanagement/department/(?<segment>.*)", "/${segment}")
-											.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString())
-											.circuitBreaker(config -> config.setName("departmentCircuitBreaker").setFallbackUri("forward:/contactSupport"))
-											.requestRateLimiter(config-> config.setRateLimiter(redisRateLimiter()).setKeyResolver(userKeyResolver()) )
-										)
-								.uri("lb://DEPARTMENT"))
-						
-						.route(p-> p.path("/assetmanagement/designation/**")
-								.filters(f -> 
-											f.rewritePath("/assetmanagement/designation/(?<segment>.*)", "/${segment}")
-											.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString() )
-										)
-								.uri("lb://DESIGNATION"))
-						
-						.route(p-> p.path("/assetmanagement/asset/**")
-								.filters(f -> 
-											f.rewritePath("/assetmanagement/asset/(?<segment>.*)", "/${segment}")
-											.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString() )
-										)
-								.uri("lb://ASSET"))
-						.build();
+				.route(p -> p.path("/assetmanagement/company/**")
+						.filters(f -> f.rewritePath("/assetmanagement/company/(?<segment>.*)", "/${segment}")
+								.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString())
+								.retry(retryConfig -> retryConfig.setRetries(3).setMethods(HttpMethod.GET)
+										.setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true)))
+						.uri("lb://COMPANY"))
+
+				.route(p -> p.path("/assetmanagement/department/**").filters(f -> f
+						.rewritePath("/assetmanagement/department/(?<segment>.*)", "/${segment}")
+						.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString())
+						.circuitBreaker(config -> config.setName("departmentCircuitBreaker")
+								.setFallbackUri("forward:/contactSupport"))
+						.requestRateLimiter(
+								config -> config.setRateLimiter(redisRateLimiter()).setKeyResolver(userKeyResolver())))
+						.uri("lb://DEPARTMENT"))
+
+				.route(p -> p.path("/assetmanagement/designation/**")
+						.filters(f -> f.rewritePath("/assetmanagement/designation/(?<segment>.*)", "/${segment}")
+								.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString()))
+						.uri("lb://DESIGNATION"))
+
+				.route(p -> p.path("/assetmanagement/asset/**")
+						.filters(f -> f.rewritePath("/assetmanagement/asset/(?<segment>.*)", "/${segment}")
+								.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString()))
+						.uri("lb://ASSET"))
+				.build();
 	}
-	
+
 	@Bean
 	Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer() {
-		return factory -> factory.configureDefault(id ->new Resilience4JConfigBuilder(id)
-				  .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
-				  .timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(4)).build()).build()
-				);
+		return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
+				.circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
+				.timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(4)).build()).build());
 	}
+
 	@Bean
 	RedisRateLimiter redisRateLimiter() {
-		return new RedisRateLimiter(1,1,1);
+		return new RedisRateLimiter(1, 1, 1);
 	}
-	
+
 	@Bean
 	KeyResolver userKeyResolver() {
-		return exchange -> Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst("user")).defaultIfEmpty("anonymous");
+		return exchange -> Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst("user"))
+				.defaultIfEmpty("anonymous");
 	}
-	
+
 }

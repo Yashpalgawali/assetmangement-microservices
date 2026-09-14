@@ -6,7 +6,8 @@ import com.example.demo.entity.Asset;
 public class AssetMapper {
 
 	public static Asset mapToAsset(AssetDto assetDto, Asset asset) {
-
+		
+		asset.setAssetId(assetDto.getAssetId());
 		asset.setAssetName(assetDto.getAssetName().trim());
 		asset.setModelNumber(assetDto.getModelNumber().trim());
 		asset.setAssetNumber(assetDto.getAssetNumber().trim());

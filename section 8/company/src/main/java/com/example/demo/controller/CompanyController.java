@@ -27,7 +27,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("company")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class CompanyController {
 
@@ -46,7 +46,7 @@ public class CompanyController {
 	public ResponseEntity<ResponseDto> createCompany(@RequestBody Company company )
 	{
 		compserv.saveCompany(company);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("company created successfully by Vaishnavi", HttpStatus.CREATED));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("company created successfully ", HttpStatus.CREATED));
 	}
 	
 	@GetMapping("/")
@@ -78,7 +78,7 @@ public class CompanyController {
 	public ResponseEntity<ResponseDto> updateCompany(@RequestBody Company company )
 	{
 		compserv.updateCompany(company);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("Company Updated Successfully by Vaishnavi", HttpStatus.OK));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("Company Updated Successfully", HttpStatus.OK));
 	}
 	
 	@GetMapping("/build-version")
