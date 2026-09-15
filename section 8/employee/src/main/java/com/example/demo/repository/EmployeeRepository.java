@@ -15,13 +15,13 @@ import java.util.List;
 @Repository("emprepo")
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-	public Optional<Employee> findByEmpName(String empName);
+	public Optional<Employee> findByEmployeeName(String empName);
 	
-	List<Employee> findByDepartment(Long department);
+	List<Employee> findByDepartmentId(Long department);
 	
-	List<Employee> findByCompany(Long company);
+	List<Employee> findByCompanyId(Long company);
 	
-	@Query("UPDATE Employee e SET e.empName=:name,e.department=:deptid,e.company=:compid WHERE e.empId=:empid")
+	@Query("UPDATE Employee e SET e.employeeName=:name,e.departmentId=:deptid,e.companyId=:compid WHERE e.employeeId=:empid")
 	@Modifying
 	public int updateEmployee(Long empid,String name, Long deptid, Long compid);
 }

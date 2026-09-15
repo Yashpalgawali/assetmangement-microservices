@@ -76,6 +76,18 @@ public class DepartmentController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body(deptList);
 	}
+	
+	@GetMapping("/company/{id}")
+	public ResponseEntity<List<DepartmentDto>> getDepartmentsDtoByCompId(
+			@RequestHeader("assetmanagement-correlation-id") String correlationId, @PathVariable Long id ) {
+		logger.debug("assetmanagement-correlation-id {} ", correlationId);
+		List<DepartmentDto> deptList = deptserv.getAllDepartmentsByCompanyId(correlationId, id);
+		System.err.println("DEPT LIST ");
+		
+		deptList.forEach(System.err::println);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(deptList);
+	}
 
 	@GetMapping("/contact-info")
 	public ResponseEntity<DepartmentContactInfoDto> getBuildInfo() {

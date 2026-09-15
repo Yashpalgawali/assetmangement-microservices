@@ -30,7 +30,7 @@ public class GatewayserverApplication {
 //				 System.err.print(num++ +"\t");
 //			 }
 //			 System.err.println();
-//		 }
+//		 } 
 
 	}
 
@@ -63,6 +63,10 @@ public class GatewayserverApplication {
 						.filters(f -> f.rewritePath("/assetmanagement/asset/(?<segment>.*)", "/${segment}")
 								.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString()))
 						.uri("lb://ASSET"))
+				.route(p -> p.path("/assetmanagement/employee/**")
+						.filters(f -> f.rewritePath("/assetmanagement/employee/(?<segment>.*)", "/${segment}")
+								.addResponseHeader("X-RESPONSE-TIME", LocalDateTime.now().toString()))
+						.uri("lb://EMPLOYEE"))
 				.build();
 	}
 
@@ -75,7 +79,7 @@ public class GatewayserverApplication {
 
 	@Bean
 	RedisRateLimiter redisRateLimiter() {
-		return new RedisRateLimiter(1, 1, 1);
+		return new RedisRateLimiter(50, 50, 1);
 	}
 
 	@Bean

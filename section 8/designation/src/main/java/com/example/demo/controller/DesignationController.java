@@ -20,7 +20,7 @@ import com.example.demo.service.IDesignationService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("designation")
+@RequestMapping("api")
 @RequiredArgsConstructor
 public class DesignationController {
 

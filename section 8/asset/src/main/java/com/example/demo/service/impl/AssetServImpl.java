@@ -26,58 +26,59 @@ import lombok.RequiredArgsConstructor;
 public class AssetServImpl implements IAssetService {
 
 	private final AssetRepository assetrepo;
-	
+
 	private final AssetTypeRepository assetTypeRepo;
-	
+
 	@Override
 	public void createAsset(AssetDto assetDto) {
-		
+
 		String trimmedName = assetDto.getAssetName();
 		Optional<Asset> a = assetrepo.findByAssetName(trimmedName);
-		 if(a.isPresent()) {
-			 throw new ResourceAlreadyExistsException("Asset  "+assetDto.getAssetName()+" already exists");
-		 }
-		 
-		 Asset mappedAsset = AssetMapper.mapToAsset(assetDto, new Asset());
-		 mappedAsset.setAssetId(null);
-		 
-		 Optional<AssetType> foundAssetType= assetTypeRepo.findById(assetDto.getAssetType().getAssetTypeId());
-		 mappedAsset.setAssetType(foundAssetType.get());
-		 
-		 Asset savedAsset =  assetrepo.save(mappedAsset);
-		 
-		 if(savedAsset== null) {
-			 throw new GlobalException("Asset  "+assetDto.getAssetName()+" is not created");
-		 }		
+		if (a.isPresent()) {
+			throw new ResourceAlreadyExistsException("Asset  " + assetDto.getAssetName() + " already exists");
+		}
+
+		Asset mappedAsset = AssetMapper.mapToAsset(assetDto, new Asset());
+		mappedAsset.setAssetId(null);
+
+		Optional<AssetType> foundAssetType = assetTypeRepo.findById(assetDto.getAssetType().getAssetTypeId());
+		mappedAsset.setAssetType(foundAssetType.get());
+
+		Asset savedAsset = assetrepo.save(mappedAsset);
+
+		if (savedAsset == null) {
+			throw new GlobalException("Asset  " + assetDto.getAssetName() + " is not created");
+		}
 	}
 
 	@Override
 	public AssetDto getAssetById(Long id) {
 
-		Asset found = assetrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", ""+id) );
+		Asset found = assetrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", "" + id));
 		return AssetMapper.mapToAssetDto(found, new AssetDto());
 	}
 
 	@Override
 	public AssetDto getAssetByName(String name) {
 
-		Asset found = assetrepo.findByAssetName(name).orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", name) );
+		Asset found = assetrepo.findByAssetName(name)
+				.orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", name));
 		return AssetMapper.mapToAssetDto(found, new AssetDto());
 	}
 
 	@Override
 	public List<AssetDto> getAllAssets() {
-		
+
 		var assetList = assetrepo.findAll();
-		if(assetList.size()<0) {
+		if (assetList.size() < 0) {
 			throw new ResourceNotFoundException("Asset ", "List", "asset ");
 		}
-		List<AssetDto> assetDtoList = assetList.stream().map(a-> {
-			a.getAssetType();
+		List<AssetDto> assetDtoList = assetList.stream().map(a -> {
+			
 			AssetDto mapped = AssetMapper.mapToAssetDto(a, new AssetDto());
-			
+
 			return mapped;
-			
+
 		}).collect(Collectors.toList());
 		return assetDtoList;
 	}
@@ -86,18 +87,16 @@ public class AssetServImpl implements IAssetService {
 	@Transactional
 	public void updateAsset(AssetDto assetDto) {
 
-		assetrepo.findById(assetDto.getAssetId()).orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", ""+assetDto.getAssetId()) );
+		assetrepo.findById(assetDto.getAssetId())
+				.orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", "" + assetDto.getAssetId()));
 
 		String trimmedName = assetDto.getAssetName();
-		Optional<Asset> a = assetrepo.findByAssetName(trimmedName);
-		 if(a.isPresent()) {
-			 throw new ResourceAlreadyExistsException("Asset  "+assetDto.getAssetName()+" already exists");
-		 }
 
-		int res = assetrepo.updateAsset(assetDto.getAssetId(), assetDto.getAssetName().trim(),assetDto.getModelNumber().trim(),assetDto.getAssetNumber().trim(),assetDto.getAssetType().getAssetTypeId(),assetDto.getQty());
-		if(res < 0 ) {
+		int res = assetrepo.updateAsset(assetDto.getAssetId(), trimmedName, assetDto.getModelNumber().trim(),
+				assetDto.getAssetNumber().trim(), assetDto.getAssetType().getAssetTypeId(), assetDto.getQty());
+		if (res < 0) {
 			throw new ResourceNotModifiedException("Asset ", "name", assetDto.getAssetName());
 		}
-    }
+	}
 
 }

@@ -14,19 +14,26 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name ="tbl_employee")
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor
+@Table(name = "tbl_employee")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Employee {
 
 	@Id
-	@SequenceGenerator(name= "emp_seq",allocationSize = 1, initialValue = 1)
+	@SequenceGenerator(name = "emp_seq", allocationSize = 1, initialValue = 1)
 	@GeneratedValue(generator = "emp_seq", strategy = GenerationType.AUTO)
-	Long empId;
-	
-	String empName;
-	
-	Long department;
-	
-	Long company;
+	Long employeeId;
+
+	String employeeName;
+
+	String employeeEmail;
+
+	Long departmentId;
+
+	Long companyId;
+
+	Long designationId;
 }

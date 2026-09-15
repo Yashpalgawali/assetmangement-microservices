@@ -29,16 +29,13 @@ public class AssetController {
 	public ResponseEntity<ResponseDto> createAssetType(@RequestBody AssetDto assetDto) {
 
 		assetServ.createAsset(assetDto);
-
 		return ResponseEntity.status(HttpStatus.CREATED).body(
 				new ResponseDto("Asset " + assetDto.getAssetName() + " is created successfully", HttpStatus.CREATED));
 	}
 
 	@GetMapping("/")
 	public ResponseEntity<List<AssetDto>> getAllAssets() {
-
 		var list = assetServ.getAllAssets();
-
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
 
@@ -46,7 +43,6 @@ public class AssetController {
 	public ResponseEntity<AssetDto> getAssetById(@PathVariable Long id) {
 
 		var asset = assetServ.getAssetById(id);
-
 		return ResponseEntity.status(HttpStatus.OK).body(asset);
 	}
 

@@ -7,20 +7,20 @@ public class EmployeeMapper {
 
 	public static Employee mapToEmployee(EmployeeDto employeeDto, Employee emp) {
 
-		emp.setEmpId(employeeDto.getEmpId());
-		emp.setEmpName(employeeDto.getEmpName());
-		emp.setDepartment(employeeDto.getDepartment());
-		emp.setCompany(employeeDto.getCompany());
+		emp.setEmployeeId(employeeDto.getEmployeeId());
+		emp.setEmployeeName(employeeDto.getEmployeeName());
+		emp.setDepartmentId(employeeDto.getDepartmentId());
+		emp.setCompanyId(employeeDto.getCompanyId());
 
 		return emp;
 	}
 
 	public static EmployeeDto mapToEmployeeDto(Employee emp, EmployeeDto employeeDto) {
 
-		employeeDto.setEmpId(emp.getEmpId());
-		employeeDto.setEmpName(emp.getEmpName());
-		employeeDto.setDepartment(emp.getDepartment());
-		employeeDto.setCompany(emp.getCompany());
+		employeeDto.setEmployeeId(emp.getEmployeeId());
+		employeeDto.setEmployeeName(emp.getEmployeeName());
+		employeeDto.setDepartmentId(emp.getDepartmentId());
+		employeeDto.setCompanyId(emp.getCompanyId());
 
 		return employeeDto;
 	}

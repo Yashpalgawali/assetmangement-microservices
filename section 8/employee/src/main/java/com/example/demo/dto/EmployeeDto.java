@@ -14,13 +14,13 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmployeeDto {
 
-	Long empId;
+	Long employeeId;
 	
-	String empName;
+	String employeeName;
 	
-	Long department;
+	Long departmentId;
 	
-	Long company;
+	Long companyId;
 	
 	List<Long> asset_ids;
 }

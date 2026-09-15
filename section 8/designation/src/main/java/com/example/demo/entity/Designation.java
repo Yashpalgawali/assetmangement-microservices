@@ -26,7 +26,7 @@ public class Designation {
 	@GeneratedValue(generator = "desig_seq", strategy = GenerationType.AUTO)
 	Long designationId;
 	
-	@Column(unique = true)
+	@Column(unique = true)	
 	String designationName;
 	
 }

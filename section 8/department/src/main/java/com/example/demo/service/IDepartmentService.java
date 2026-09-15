@@ -12,4 +12,5 @@ public interface IDepartmentService {
 	public DepartmentDto getDepartmentByDeptName(String correlationId,String deptName);
 	public void updateDepartment(DepartmentDto department);
 	public boolean updateCommunication(Long departmentId);
+	public List<DepartmentDto> getAllDepartmentsByCompanyId(String correlationId,Long companyId);
 }

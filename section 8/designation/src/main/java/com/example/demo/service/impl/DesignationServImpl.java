@@ -37,7 +37,7 @@ public class DesignationServImpl implements IDesignationService {
 		}
 		designationDto.setDesignationName(trimmedName);
 		Designation desig =DesignationMapper.mapToDesignation(new Designation(), designationDto);
-		
+		desig.setDesignationId(null);
 		if(desigrepo.save(desig) ==null ) {
 			throw new GlobalException("Designation "+trimmedName+" is not created");
 		}

@@ -10,7 +10,7 @@ spring:
     username: root
     password: root
 #    url: jdbc:mysql://host.docker.internal:3399/designationdb
-    url: jdbc:mysql://localhost:3308/designationdb
+    url: jdbc:mysql://localhost:3399/assetmanagement_micro_db
   jpa:
     show-sql: true
     hibernate:
@@ -26,6 +26,15 @@ spring:
   config:
 #    import: "optional:configserver:http://host.docker.internal:8071/"
     import: "optional:configserver:http://localhost:8071/"
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+  instance:
+    prefer-ip-address: true
 
 management:
   endpoints:

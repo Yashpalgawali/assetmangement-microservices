@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +13,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.ResourceNotModifiedException;
 import com.example.demo.mapper.EmployeeMapper;
 import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.service.IEmployeeService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,19 +25,16 @@ public class EmployeeServImpl implements IEmployeeService {
 
 	@Override
 	public void createEmployee(EmployeeDto empDto) {
-		// TODO Auto-generated method stub
 
-		if (!empDto.getEmpName().equals("")) {
+		if (!empDto.getEmployeeName().equals("")) {
 
-			empDto.setEmpName(empDto.getEmpName().trim());
-			Optional<Employee> byEmpName = emprepo.findByEmpName(empDto.getEmpName());
+			empDto.setEmployeeName(empDto.getEmployeeName().trim());
+			Optional<Employee> byEmpName = emprepo.findByEmployeeName(empDto.getEmployeeName());
 			if (!byEmpName.isEmpty()) {
 				throw new ResourceAlreadyExistsException(
-						"Employee is already present with the given name " + empDto.getEmpName());
+						"Employee is already present with the given name " + empDto.getEmployeeName());
 			}
-
 		}
-
 	}
 
 	@Override
@@ -52,17 +50,16 @@ public class EmployeeServImpl implements IEmployeeService {
 
 	@Override
 	public EmployeeDto getEmployeeByName(String name) {
-		Optional<Employee> foundEmp = emprepo.findByEmpName(name);
+		Optional<Employee> foundEmp = emprepo.findByEmployeeName(name);
 		if (foundEmp.isPresent()) {
 			return EmployeeMapper.mapToEmployeeDto(foundEmp.get(), new EmployeeDto());
 		}
-
 		throw new ResourceNotFoundException("Employee", "ID", name);
 	}
 
 	@Override
 	public List<EmployeeDto> getEmployeeByDepartment(Long deptId) {
-		var empList = emprepo.findByDepartment(deptId);
+		var empList = emprepo.findByDepartmentId(deptId);
 		if (empList.size() > 0) {
 			return getEmployeeListMappedToDTO(empList);
 		}
@@ -71,7 +68,7 @@ public class EmployeeServImpl implements IEmployeeService {
 
 	@Override
 	public List<EmployeeDto> getEmployeeByCompany(Long compId) {
-		var empList = emprepo.findByCompany(compId);
+		var empList = emprepo.findByCompanyId(compId);
 		if (empList.size() > 0) {
 			return getEmployeeListMappedToDTO(empList);
 		}
@@ -99,12 +96,13 @@ public class EmployeeServImpl implements IEmployeeService {
 
 	@Override
 	public void updateEmployee(EmployeeDto empDto) {
-		this.getEmployeeById(empDto.getEmpId());
-		
-		int res = emprepo.updateEmployee(empDto.getEmpId(), empDto.getEmpName(), empDto.getDepartment(), empDto.getCompany());
-		
-		if(res< 0) {
-			throw new ResourceNotModifiedException("Employee", "ID", ""+empDto.getEmpId());
+		this.getEmployeeById(empDto.getEmployeeId());
+
+		int res = emprepo.updateEmployee(empDto.getEmployeeId(), empDto.getEmployeeName(), empDto.getDepartmentId(),
+				empDto.getCompanyId());
+
+		if (res < 0) {
+			throw new ResourceNotModifiedException("Employee", "ID", "" + empDto.getEmployeeId());
 		}
 	}
 

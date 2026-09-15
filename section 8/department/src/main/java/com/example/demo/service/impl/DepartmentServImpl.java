@@ -176,4 +176,28 @@ public class DepartmentServImpl implements IDepartmentService {
 		return isUpdated;
 	}
 
+	@Override
+	public List<DepartmentDto> getAllDepartmentsByCompanyId(String correlationId,Long companyId) {
+		
+		var deptList = deptrepo.findByCompanyId(companyId);
+
+		return deptList.stream().map((d) -> {
+			DepartmentDto deptDto = new DepartmentDto();
+			deptDto.setDepartmentId(d.getDepartmentId());
+			deptDto.setDepartmentName(d.getDepartmentName());
+
+			ResponseEntity<Company> company = companyClient.getCompanyById(correlationId, companyId);
+			
+			Company body = company.getBody();
+			if (body != null) {
+				
+				deptDto.setCompanyName(body.getCompanyName());
+			} else {
+				
+				deptDto.setCompanyName("");
+			}
+			return deptDto;
+		}).collect(Collectors.toList());
+	}
+
 }
