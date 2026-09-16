@@ -233,7 +233,7 @@ services:
     extends:
       file: common-config.yml
       service: network-deploy-service
-      
+
   companydb:
     container_name: "companydb"
     ports:

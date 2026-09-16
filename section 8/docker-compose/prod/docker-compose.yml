@@ -394,8 +394,7 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "company"
 #      SPRING_DATASOURCE_URL: "jdbc:mysql://companydb:3306/companydb"
-#      SPRING_DATASOURCE_URL: "jdbc:mysql://assetmanagementdb:3306/assetmanagementdb"
-      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
+#      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
       service: microservice-common-config
@@ -431,69 +430,68 @@ services:
       rabbit:
         condition: service_healthy
     environment:
-      SPRING_APPLICATION_NAME: "department"
-      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
+      SPRING_APPLICATION_NAME: "department"	  
+#      SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "kafka:9092"
     extends:
       file: common-config.yml
       service: microservice-common-config
 #      service: microservice-eureka-config
 
-#  asset:
-#    image: "yashpalgawali/asset:v1"
-#    container_name: "asset-ms"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:9094/actuator/health/readiness | grep UP || exit 1"
-#      interval: 10s
-#      start_period: 10s
-#      timeout: 5s
-#      retries: 15
-#    depends_on:
-#      assetmanagementdb: 
-#        condition: service_healthy
-#    environment:
-#      SPRING_APPLICATION_NAME: "asset"
-#    extends:
-#      file: common-config.yml
-#      service: microservice-common-config
-#
-#  employee:
-#    image: "yashpalgawali/employee:v1"
-#    container_name: "employee-ms"
-#    healthcheck:
-#      test: "curl --fail --silent localhost:9590/actuator/health/readiness | grep UP || exit 1"
-#      interval: 10s
-#      start_period: 10s
-#      timeout: 5s
-#      retries: 15
-#    depends_on:
-#      assetmanagementdb: 
-#        condition: service_healthy
-#    environment:
-#      SPRING_APPLICATION_NAME: "employee"
-#    extends:
-#      file: common-config.yml
-#      service: microservice-common-config
+  asset:
+    image: "yashpalgawali/asset:v1"
+    container_name: "asset-ms"
+    healthcheck:
+      test: "curl --fail --silent localhost:9094/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      start_period: 10s
+      timeout: 5s
+      retries: 15
+    depends_on:
+      assetmanagementdb: 
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "asset"
+    extends:
+      file: common-config.yml
+      service: microservice-common-config
 
-#  designation:
-#    image: "yashpalgawali/designation:v1"
-#    container_name: "designation-ms"
+  employee:
+    image: "yashpalgawali/employee:v1"
+    container_name: "employee-ms"
+    healthcheck:
+      test: "curl --fail --silent localhost:9590/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      start_period: 10s
+      timeout: 5s
+      retries: 15
+    depends_on:
+      assetmanagementdb: 
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "employee"
+    extends:
+      file: common-config.yml
+      service: microservice-common-config
+
+  designation:
+    image: "yashpalgawali/designation:v1"
+    container_name: "designation-ms"
 #    ports:
 #      - "9093:9093"
-#     healthcheck:
-#       test: "curl --fail --silent localhost:9092/actuator/health/readiness | grep UP || exit 1"
-#       interval: 10s
-#       timeout: 5s 
-#       retries: 15
-#       start_period: 10s
-#    depends_on:
-#      designationdb:
-#        condition: service_healthy
-#    environment:
-#      SPRING_APPLICATION_NAME: "designation"
-#      SPRING_DATASOURCE_URL: "jdbc:mysql://designationdb:3306/designationdb"
-#    extends:
-#      file: common-config.yml
-#      service: microservice-eureka-config
+    healthcheck:
+      test: "curl --fail --silent localhost:9092/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s 
+      retries: 15
+      start_period: 10s
+    depends_on:
+      assetmanagementdb:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "designation"
+    extends:
+      file: common-config.yml
+      service: microservice-common-config
 
 #  message:
 #    image: "yashpalgawali/message:v1"
@@ -531,8 +529,12 @@ services:
         condition: service_healthy
       department:
         condition: service_healthy
-#      asset:
-#        condition: service_healthy          
+      asset:
+        condition: service_healthy
+      designation:
+        condition: service_healthy
+      employee:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "gatewayserver"
       SPRING_DATA_REDIS_HOST: redis
