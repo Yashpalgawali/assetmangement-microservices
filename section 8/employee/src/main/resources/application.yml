@@ -21,6 +21,13 @@ spring:
     connection-timeout: 10s
   config:
     import: "optional:configserver://localhost:8071"
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+    circuitbreaker:
+      resilience4j:
+        enabled: true
 
 eureka:
   client:
