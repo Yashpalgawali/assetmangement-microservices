@@ -15,7 +15,8 @@ spring:
   jpa:    
     show-sql: true
     hibernate:
-      ddl-auto: update    
+      ddl-auto: update
+  
   rabbitmq:
     host: localhost
     port: 5672
@@ -25,6 +26,9 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8071/"
   cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
     circuitbreaker:
       resilience4j:
         enabled: true

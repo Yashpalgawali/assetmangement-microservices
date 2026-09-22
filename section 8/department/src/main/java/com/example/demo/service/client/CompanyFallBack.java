@@ -1,5 +1,6 @@
 package com.example.demo.service.client;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,7 @@ public class CompanyFallBack implements CompanyFeignClient {
 
 	@Override
 	public ResponseEntity<List<Company>> getAllCompaniesList(String correlationId) {
-		// TODO Auto-generated method stub
-		return null;
+		 return ResponseEntity.ok(Collections.emptyList());
 	}
 
 }

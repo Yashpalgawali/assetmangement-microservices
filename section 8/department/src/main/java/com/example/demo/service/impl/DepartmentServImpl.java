@@ -1,6 +1,8 @@
 package com.example.demo.service.impl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -84,10 +86,11 @@ public class DepartmentServImpl implements IDepartmentService {
 	public List<DepartmentDto> getAllDepartments(String correlationId) {
 		var list = deptrepo.findAll();
 		if (list.size() > 0) {
-			List<Company> compList = companyClient.getAllCompaniesList(correlationId).getBody();
-
-			logger.debug("assetmanagement-correlation-id in getlldepartments() {} and the company List is {} ",
-					correlationId, compList);
+//			List<Company> compList = companyClient.getAllCompaniesList(correlationId).getBody();
+			ResponseEntity<List<Company>> response =
+		            companyClient.getAllCompaniesList(correlationId);
+			  List<Company> compList = response.getBody() != null ? response.getBody() : Collections.emptyList();
+			
 			return list.stream().map((dept) -> {
 				logger.warn(" found deptList {}", dept);
 
@@ -95,8 +98,16 @@ public class DepartmentServImpl implements IDepartmentService {
 				deptDto.setDepartmentId(dept.getDepartmentId());
 				deptDto.setDepartmentName(dept.getDepartmentName());
 
-				Predicate<? super Company> predicate = p -> dept.getCompanyId() == p.getCompanyId();
-				Optional<Company> company = compList.stream().filter(predicate).findFirst();
+//				Predicate<? super Company> predicate = p -> dept.getCompanyId() == p.getCompanyId();
+//				Optional<Company> company = compList.stream().filter(predicate).findFirst();
+				
+				Optional<Company> company =
+	                        compList.stream()
+	                                .filter(p -> Objects.equals(
+	                                        dept.getCompanyId(),
+	                                        p.getCompanyId()
+	                                ))
+	                                .findFirst();
 
 				if (company.isPresent()) {
 					deptDto.setCompanyId(company.get().getCompanyId());

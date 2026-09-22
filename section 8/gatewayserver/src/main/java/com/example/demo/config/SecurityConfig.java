@@ -33,7 +33,8 @@ public class SecurityConfig {
 						.pathMatchers("/assetmanagement/company/**").hasAnyRole("USER", "ADMIN")
 						.pathMatchers("/assetmanagement/department/**").hasAnyRole("USER", "ADMIN")
 						.pathMatchers("/assetmanagement/designation/**").hasAnyRole("USER", "ADMIN")
-						.pathMatchers("/assetmanagement/asset/**").hasAnyRole("USER", "ADMIN"))
+						.pathMatchers("/assetmanagement/asset/**").hasAnyRole("USER", "ADMIN")
+						.pathMatchers("/assetmanagement/employee/**").hasAnyRole("USER", "ADMIN"))
 				.oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec
 						.jwt(jwtSpec -> jwtSpec.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
 
@@ -48,8 +49,10 @@ public class SecurityConfig {
         
         // Allow both LAN IP and localhost frontend origins
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://192.168.0.219:3000",
-                "http://localhost:3000"
+        		"http://192.168.0.219:3000",
+                "http://localhost:3000",
+        		"http://192.168.0.219:3001",
+                "http://localhost:3001"
         ));
 
         // Or if you want to allow any origin in dev:

@@ -14,20 +14,21 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name ="tbl_assigned_assets")
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor
+@Table(name = "tbl_assigned_assets")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AssignAssets {
 
 	@Id
-	@SequenceGenerator(name="assigned_asset_seq", initialValue = 1,allocationSize = 1)
-	@GeneratedValue(generator = "assigned_asset_seq",strategy = GenerationType.AUTO)
+	@SequenceGenerator(name = "assigned_asset_seq", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(generator = "assigned_asset_seq", strategy = GenerationType.AUTO)
 	Long assignedAssetId;
-	
+
 	Long empId;
-	
+
 	Long assetId;
-	
-	
-	
+
 }
