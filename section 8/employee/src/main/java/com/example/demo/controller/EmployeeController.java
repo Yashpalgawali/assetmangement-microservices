@@ -24,46 +24,48 @@ import lombok.RequiredArgsConstructor;
 public class EmployeeController {
 
 	private final IEmployeeService employeeService;
-	
+
 	@PostMapping("/")
 	public ResponseEntity<ResponseDto> createEmployee(@RequestBody EmployeeDto empDto) {
-		
+
 		employeeService.createEmployee(empDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("Employee "+empDto.getEmployeeName()+" is created successfully", HttpStatus.CREATED));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(
+				"Employee " + empDto.getEmployeeName() + " is created successfully", HttpStatus.CREATED));
 	}
-	
+
 	@GetMapping("/")
 	public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
-		
+
 		var list = employeeService.getAllEmployees();
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
-		
+
 		var employee = employeeService.getEmployeeById(id);
-		return ResponseEntity.status(HttpStatus.OK).body(employee );
+		return ResponseEntity.status(HttpStatus.OK).body(employee);
 	}
-	
+
 	@GetMapping("/name/{name}")
 	public ResponseEntity<EmployeeDto> getEmployeeByName(@PathVariable String name) {
-		
+
 		var employee = employeeService.getEmployeeByName(name);
-		return ResponseEntity.status(HttpStatus.OK).body(employee );
+		return ResponseEntity.status(HttpStatus.OK).body(employee);
 	}
-	
+
 //	@GetMapping("/{id}")
 //	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
 //		
 //		var employee = employeeService.getEmployeeById(id);
 //		return ResponseEntity.status(HttpStatus.OK).body(employee );
 //	}
-	
+
 	@PutMapping("/")
 	public ResponseEntity<ResponseDto> updateEmployee(@RequestBody EmployeeDto empDto) {
-		
+
 		employeeService.createEmployee(empDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("Employee "+empDto.getEmployeeName()+" is created successfully", HttpStatus.CREATED));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(
+				"Employee " + empDto.getEmployeeName() + " is created successfully", HttpStatus.CREATED));
 	}
 }

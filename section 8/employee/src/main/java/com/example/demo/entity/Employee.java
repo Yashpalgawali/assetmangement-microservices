@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,9 +33,15 @@ public class Employee {
 
 	String employeeEmail;
 
+	Long employeeCode;
+	
+	Long employeeContact;
+
 	Long departmentId;
 
 	Long companyId;
 
 	Long designationId;
+	
+	
 }

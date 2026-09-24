@@ -1,30 +1,23 @@
 package com.example.demo.dto;
 
-import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AssignedAssetsDto {
+@Builder
+public class DepartmentDto {
+	
+	Long departmentId;
 
-	Long empId;
+	String departmentName;
 	
-	List<Long> assetId;
+	Long companyId;
 	
-	String empName;
-	
-	String department;
-	
-	String company;
-	
-	String assetName;
-	
-	String assettype;
+	String companyName;
 }

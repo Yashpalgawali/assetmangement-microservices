@@ -12,29 +12,19 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EmployeeDto {
+public class AssignAssetsDto {
 
-	Long employeeId;
-
-	String employeeName;
-
-	String employeeEmail;
-
-	Long employeeCode;
+	Long empId;
 	
-	Long employeeContact;
-
-	Long departmentId;
-
-	Long companyId;
-
-	String companyName;
-
-	String departmentName;
-
-	Long designationId;
-
-	String designationName;
-
-	List<Long> asset_ids;
+	List<Long> assetId;
+	
+	String empName;
+	
+	String department;
+	
+	String company;
+	
+	String assetName;
+	
+	String assettype;
 }

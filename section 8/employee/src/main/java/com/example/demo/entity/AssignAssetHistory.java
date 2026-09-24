@@ -22,7 +22,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AssignAssethistory {
+public class AssignAssetHistory {
 
 	@Id
 	@SequenceGenerator(name = "assigned_asset_hist_seq", initialValue = 1, allocationSize = 1)
@@ -30,16 +30,22 @@ public class AssignAssethistory {
 	Long assignedAssetHistory;
 
 	Long empId;
+	
+	String empName;
 
 	Long assetId;
+	
+	String assetName;
+	
+	String assettype;
 
-	LocalDateTime assignedDate;
+	String assignedDate;
 
-	LocalDateTime assignedTime;
+	String assignedTime;
 
-	LocalDateTime updateDate;
+	String updateDate;
 
-	LocalDateTime updateTime;
+	String updateTime;
 
 	String assignedBy;
 

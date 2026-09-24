@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.AssignAssets;
 
 @Repository("assignassetrepo")
-public interface AssingAssetRepository extends JpaRepository<AssignAssets, Long> {
+public interface AssignAssetRepository extends JpaRepository<AssignAssets, Long> {
 
 }
