@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ public class DepartmentDto {
 
 	Long departmentId;
 	
+	@NotBlank(message = "Department Name can't be blank")
 	String departmentName;
 	
 	Long companyId;

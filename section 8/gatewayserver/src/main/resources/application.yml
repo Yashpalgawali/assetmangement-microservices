@@ -39,14 +39,6 @@ spring:
 #    client-secret: 0z70wbyr60b6GPLevxfrXBhbVPlCVKpn   # ← from Keycloak admin-cli Credentials tab
 #  default-role: USER
 
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: http://localhost:8070/eureka/
 
 management:
   endpoints:
@@ -76,7 +68,7 @@ management:
 info:
   app:
     name: "gatewayserver"
-    description: "Asset Management APi Gateway server"
+    description: "Asset Management API Gateway server"
     version: "1.0.0"
 
 endpoints:

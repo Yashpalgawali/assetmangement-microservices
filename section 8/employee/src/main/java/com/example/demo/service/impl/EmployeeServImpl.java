@@ -54,7 +54,6 @@ public class EmployeeServImpl implements IEmployeeService {
 	public void createEmployee(EmployeeDto empDto) {
 
 		empDto.setEmployeeId(null);
-		System.err.println("The EMployee Object IS " + empDto.toString());
 
 		if (empDto.getEmployeeName() != "") {
 
@@ -67,14 +66,12 @@ public class EmployeeServImpl implements IEmployeeService {
 			empDto.setEmployeeId(null);
 			Employee mappedEmployee = EmployeeMapper.mapToEmployee(empDto, new Employee());
 			mappedEmployee.setEmployeeId(null);
-			System.err.println("The EMployee Object IS " + empDto.toString());
 
 //			ResponseEntity<DepartmentDto> departmentDto = deptClient.getDepartmentDto(null,empDto.getDepartmentId());
 
 //			ResponseEntity<DesignationDto> designationDto = desigClient.getDesignationById(empDto.getDesignationId());
 
 			Employee savedEmployee = emprepo.save(mappedEmployee);
-			System.err.println("Saved Employee " + savedEmployee);
 
 			if (savedEmployee != null) {
 				for (Long id : empDto.getAsset_ids()) {
@@ -88,7 +85,9 @@ public class EmployeeServImpl implements IEmployeeService {
 					if (assignedAssets != null) {
 						ResponseEntity<AssetDto> assetById = assetClient.getAssetById(id);
 						AssetDto assetByClient = assetById.getBody() != null ? assetById.getBody() : null;
-
+						
+						System.err.println("Asset DTO found "+assetByClient.toString());
+						
 						AssignAssetHistory assignHistory = new AssignAssetHistory();
 						assignHistory.setAssetId(id);
 						assignHistory.setEmpName(savedEmployee.getEmployeeName());
@@ -99,7 +98,6 @@ public class EmployeeServImpl implements IEmployeeService {
 
 						AssignAssetHistory save = assignassethistrepo.save(assignHistory);
 
-						System.err.println("Saved Assigned Asset History "+save.toString());	
 					} else {
 						throw new GlobalException("The asset(s) are not assigned");
 					}
@@ -107,26 +105,28 @@ public class EmployeeServImpl implements IEmployeeService {
 			} else {
 				throw new GlobalException("Employee " + empDto.getEmployeeName() + " is not saved");
 			}
-
 		}
-
 	}
 
 	@Override
 	public EmployeeDto getEmployeeById(Long empId) {
 		Optional<Employee> foundEmp = emprepo.findById(empId);
 		if (foundEmp.isPresent()) {
+			System.err.println("Found Employee "+foundEmp.get().toString());
 			EmployeeDto mappedEmp = EmployeeMapper.mapToEmployeeDto(foundEmp.get(), new EmployeeDto());
-
+				
 			ResponseEntity<DepartmentDto> departmentDto = deptClient.getDepartmentDto(null,
 					mappedEmp.getDepartmentId());
 
 			if (departmentDto != null) {
 				DepartmentDto deptBody = departmentDto.getBody();
+				System.err.println("DePartment DTO Body  "+deptBody.toString());
+				mappedEmp.setCompanyId(deptBody.getCompanyId());
 				mappedEmp.setCompanyName(deptBody.getCompanyName());
 				mappedEmp.setDepartmentName(deptBody.getDepartmentName());
 				mappedEmp.setDepartmentId(deptBody.getDepartmentId());
 			} else {
+				mappedEmp.setCompanyId(null);
 				mappedEmp.setCompanyName("");
 				mappedEmp.setDepartmentName("");
 				mappedEmp.setDepartmentId(null);
@@ -140,7 +140,10 @@ public class EmployeeServImpl implements IEmployeeService {
 			} else {
 				mappedEmp.setDesignationName("");
 			}
-			return null;
+			
+			System.err.println("Mapped Employee "+mappedEmp.toString());
+			
+			return mappedEmp;
 		}
 
 		throw new ResourceNotFoundException("Employee", "ID", "" + empId);

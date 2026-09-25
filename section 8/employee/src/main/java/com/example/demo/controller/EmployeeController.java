@@ -64,8 +64,9 @@ public class EmployeeController {
 	@PutMapping("/")
 	public ResponseEntity<ResponseDto> updateEmployee(@RequestBody EmployeeDto empDto) {
 
-		employeeService.createEmployee(empDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(
-				"Employee " + empDto.getEmployeeName() + " is created successfully", HttpStatus.CREATED));
+		employeeService.updateEmployee(empDto);
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(
+				"Employee " + empDto.getEmployeeName() + " is created successfully", HttpStatus.OK));
 	}
+	
 }

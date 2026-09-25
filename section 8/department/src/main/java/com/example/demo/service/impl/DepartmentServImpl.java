@@ -131,7 +131,7 @@ public class DepartmentServImpl implements IDepartmentService {
 		DepartmentDto mapToDepartmentDto = DepartmentMapper.mapToDepartmentDto(found, new DepartmentDto());
 		ResponseEntity<Company> companyById = companyClient.getCompanyById(correlationId, found.getCompanyId());
 
-		logger.info("Found company {} ", companyById);
+		logger.info(" Inside getDepartmentById() in department Controller Found company {} ", companyById);
 
 		if (null != companyById) {
 			Company comp = companyById.getBody();

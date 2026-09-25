@@ -70,6 +70,8 @@ public class AssetServImpl implements IAssetService {
 	public List<AssetDto> getAllAssets() {
 
 		var assetList = assetrepo.findAll();
+		assetList.forEach(System.out::print);
+		
 		if (assetList.size() < 0) {
 			throw new ResourceNotFoundException("Asset ", "List", "asset ");
 		}
@@ -80,6 +82,8 @@ public class AssetServImpl implements IAssetService {
 			return mapped;
 
 		}).collect(Collectors.toList());
+		
+		assetDtoList.forEach(System.err::print);
 		return assetDtoList;
 	}
 
@@ -97,6 +101,12 @@ public class AssetServImpl implements IAssetService {
 		if (res < 0) {
 			throw new ResourceNotModifiedException("Asset ", "name", assetDto.getAssetName());
 		}
+	}
+
+	@Override
+	public Long getTotalAssetCount() {
+		System.err.println("Assets count is "+assetrepo.count());
+		return assetrepo.count();
 	}
 
 }

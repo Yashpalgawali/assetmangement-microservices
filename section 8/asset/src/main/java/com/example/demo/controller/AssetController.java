@@ -62,4 +62,9 @@ public class AssetController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseDto("Asset " + assetDto.getAssetName() + " is updated successfully", HttpStatus.OK));
 	}
+	
+	@GetMapping("/count")
+	public ResponseEntity<Long> getTotalAssetsCount() {
+		return ResponseEntity.status(HttpStatus.OK).body(assetServ.getTotalAssetCount());
+	}
 }

@@ -15,4 +15,6 @@ public interface IAssetService {
 	public List<AssetDto> getAllAssets();
 	
 	public void updateAsset(AssetDto Asset);
+	
+	public Long getTotalAssetCount();
 }
