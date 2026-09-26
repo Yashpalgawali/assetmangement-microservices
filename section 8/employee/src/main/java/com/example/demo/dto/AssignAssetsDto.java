@@ -14,17 +14,19 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AssignAssetsDto {
 
+	Long assignedAssetId;
+	
 	Long empId;
-	
-	List<Long> assetId;
-	
+
 	String empName;
 	
 	String department;
 	
 	String company;
+
+	List<Long> assetId;
+
+	List<String> assetName;
 	
-	String assetName;
-	
-	String assettype;
+	List<String> assettype;
 }

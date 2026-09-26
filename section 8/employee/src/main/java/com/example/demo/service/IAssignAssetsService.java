@@ -10,7 +10,7 @@ public interface IAssignAssetsService {
 	
 	public List<AssignAssetsDto> getAllAssignedAssets();
 	
-	public List<AssignAssetsDto> getAllAssignedAssetsByEmpId(Long id);
+	public List<AssignAssetsDto> getAllAssignedAssetsByEmpId(String correlationId, Long id);
 	
 	
 	

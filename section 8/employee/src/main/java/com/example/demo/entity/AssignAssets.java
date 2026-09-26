@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -27,7 +29,10 @@ public class AssignAssets {
 	@GeneratedValue(generator = "assigned_asset_seq", strategy = GenerationType.AUTO)
 	Long assignedAssetId;
 
-	Long empId;
+	@ManyToOne
+	@JoinColumn(name="emp_id")
+	Employee employee;
+	//Long empId;
 
 	Long assetId;
 

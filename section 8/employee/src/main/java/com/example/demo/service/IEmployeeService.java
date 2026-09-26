@@ -8,7 +8,7 @@ public interface IEmployeeService {
 
 	public void createEmployee(EmployeeDto empDto);
 	
-	public EmployeeDto getEmployeeById(Long empId);
+	public EmployeeDto getEmployeeById(String correlationId,Long empId);
 	
 	public EmployeeDto getEmployeeByName(String name);
 	
@@ -18,7 +18,6 @@ public interface IEmployeeService {
 	
 	public List<EmployeeDto> getAllEmployees();
 	
-	public void updateEmployee(EmployeeDto empDto);
-	
+	public void updateEmployee(String correlationId,EmployeeDto empDto);
 	
 }

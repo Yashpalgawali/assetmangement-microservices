@@ -77,7 +77,7 @@ public class EmployeeServImpl implements IEmployeeService {
 				for (Long id : empDto.getAsset_ids()) {
 					AssignAssets assignAssets = new AssignAssets();
 					assignAssets.setAssetId(id);
-					assignAssets.setEmpId(savedEmployee.getEmployeeId());
+					assignAssets.setEmployee(savedEmployee);
 
 					AssignAssets assignedAssets = assignassetrepo.save(assignAssets);
 //					System.err.println("Assigned Asset " + assignedAssets.toString());
@@ -109,15 +109,17 @@ public class EmployeeServImpl implements IEmployeeService {
 	}
 
 	@Override
-	public EmployeeDto getEmployeeById(Long empId) {
+	public EmployeeDto getEmployeeById(String correlationId, Long empId) {
 		Optional<Employee> foundEmp = emprepo.findById(empId);
 		if (foundEmp.isPresent()) {
 			System.err.println("Found Employee "+foundEmp.get().toString());
 			EmployeeDto mappedEmp = EmployeeMapper.mapToEmployeeDto(foundEmp.get(), new EmployeeDto());
 				
-			ResponseEntity<DepartmentDto> departmentDto = deptClient.getDepartmentDto(null,
+			ResponseEntity<DepartmentDto> departmentDto = deptClient.getDepartmentDto(correlationId,
 					mappedEmp.getDepartmentId());
-
+			
+			System.err.println("DePartment DTO Body  " +departmentDto.getBody().toString());
+			
 			if (departmentDto != null) {
 				DepartmentDto deptBody = departmentDto.getBody();
 				System.err.println("DePartment DTO Body  "+deptBody.toString());
@@ -212,8 +214,8 @@ public class EmployeeServImpl implements IEmployeeService {
 	}
 
 	@Override
-	public void updateEmployee(EmployeeDto empDto) {
-		this.getEmployeeById(empDto.getEmployeeId());
+	public void updateEmployee(String correlationId, EmployeeDto empDto) {
+		this.getEmployeeById(correlationId, empDto.getEmployeeId());
 
 		int res = emprepo.updateEmployee(empDto.getEmployeeId(), empDto.getEmployeeName(), empDto.getDepartmentId(),
 				empDto.getCompanyId());
