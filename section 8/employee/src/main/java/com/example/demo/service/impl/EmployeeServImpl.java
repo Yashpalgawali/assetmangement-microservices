@@ -115,18 +115,18 @@ public class EmployeeServImpl implements IEmployeeService {
 			System.err.println("Found Employee "+foundEmp.get().toString());
 			EmployeeDto mappedEmp = EmployeeMapper.mapToEmployeeDto(foundEmp.get(), new EmployeeDto());
 				
-			ResponseEntity<DepartmentDto> departmentDto = deptClient.getDepartmentDto(correlationId,
+			DepartmentDto departmentDto = deptClient.getDepartmentDto(correlationId,
 					mappedEmp.getDepartmentId());
 			
-			System.err.println("DePartment DTO Body  " +departmentDto.getBody().toString());
+//			System.err.println("Department DTO Body  " +departmentDto.getBody().toString());
 			
 			if (departmentDto != null) {
-				DepartmentDto deptBody = departmentDto.getBody();
-				System.err.println("DePartment DTO Body  "+deptBody.toString());
-				mappedEmp.setCompanyId(deptBody.getCompanyId());
-				mappedEmp.setCompanyName(deptBody.getCompanyName());
-				mappedEmp.setDepartmentName(deptBody.getDepartmentName());
-				mappedEmp.setDepartmentId(deptBody.getDepartmentId());
+				
+				System.err.println("DePartment DTO Body  "+departmentDto.toString());
+				mappedEmp.setCompanyId(departmentDto.getCompanyId());
+				mappedEmp.setCompanyName(departmentDto.getCompanyName());
+				mappedEmp.setDepartmentName(departmentDto.getDepartmentName());
+				mappedEmp.setDepartmentId(departmentDto.getDepartmentId());
 			} else {
 				mappedEmp.setCompanyId(null);
 				mappedEmp.setCompanyName("");
@@ -201,11 +201,11 @@ public class EmployeeServImpl implements IEmployeeService {
 				dto.setDesignationName(designationById.getBody().getDesignationName());
 			}
 
-			ResponseEntity<DepartmentDto> departmentDto = deptClient.getDepartmentDto(null, emp.getDepartmentId());
+			DepartmentDto departmentDto = deptClient.getDepartmentDto(null, emp.getDepartmentId());
 			
-			if(departmentDto.getBody()!=null) {
-				dto.setDepartmentName(departmentDto.getBody().getDepartmentName());
-				dto.setCompanyName(departmentDto.getBody().getCompanyName());
+			if(departmentDto!=null) {
+				dto.setDepartmentName(departmentDto.getDepartmentName());
+				dto.setCompanyName(departmentDto.getCompanyName());
 			}
 			
 			return dto;

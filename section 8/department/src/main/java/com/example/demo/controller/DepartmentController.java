@@ -57,7 +57,7 @@ public class DepartmentController {
 	@GetMapping("/{id}")
 	public ResponseEntity<DepartmentDto> getDepartmentDto(
 			@RequestHeader("assetmanagement-correlation-id") String correlationId, @PathVariable Long id) {
-		logger.info("ASSETMANAGEMENT CORLATION ID FOUND in getDepartmentDto : ",correlationId);
+		logger.info("ASSETMANAGEMENT CORRELATION ID FOUND in getDepartmentDto : ",correlationId);
 		DepartmentDto departmentDto = deptserv.getDepartmentById(correlationId, id);
 		return ResponseEntity.status(HttpStatus.OK).body(departmentDto);
 	}

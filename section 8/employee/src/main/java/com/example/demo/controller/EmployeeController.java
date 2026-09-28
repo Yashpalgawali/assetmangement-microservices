@@ -79,4 +79,9 @@ public class EmployeeController {
 		List<AssignAssetsDto> assignedAssetsList = assignassetserv.getAllAssignedAssetsByEmpId(correlationId,id);
 		return ResponseEntity.status(HttpStatus.OK).body(assignedAssetsList);
 	}
+	@GetMapping("/viewassignedassets")
+	public ResponseEntity<List<AssignAssetsDto>> getAlAssignedAssets() {
+		List<AssignAssetsDto> assignedAssetsList = assignassetserv.getAllAssignedAssets();
+		return ResponseEntity.status(HttpStatus.OK).body(assignedAssetsList);
+	}
 }

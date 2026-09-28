@@ -26,7 +26,7 @@ public class AssignAssetsDto {
 
 	List<Long> assetId;
 
-	List<String> assetName;
+	String assetName;
 	
-	List<String> assettype;
+	String assettype;
 }
