@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @Entity
@@ -19,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Getter @Setter
 @FieldDefaults(level= AccessLevel.PRIVATE)
+@ToString
 public class AssetType {
 
 	@Id

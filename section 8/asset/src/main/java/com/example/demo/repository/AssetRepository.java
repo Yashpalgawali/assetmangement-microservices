@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +27,7 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
 	Optional<Asset> findByAssetNumber(String assetNumber);
 	
 	Optional<Asset> findByModelNumber(String modelNumber);
+	
+	@Query("SELECT a FROM Asset a WHERE a.qty>0")
+	List<Asset> getAllAvailableAssets();
 }

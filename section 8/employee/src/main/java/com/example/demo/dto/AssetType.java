@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor @NoArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AssetTypeDto {
+public class AssetType {
 
 	Long assetTypeId;
 	

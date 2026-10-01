@@ -21,7 +21,7 @@ public class AssetFallBack implements AssetFeignClient {
 		asset.setAssetNumber("");
 		asset.setModelNumber("");
 		asset.setQty(0);
-		asset.setAssetTypeDto(null);
+		asset.setAssetType(null);
 		return ResponseEntity.ok(asset);
 	}
 

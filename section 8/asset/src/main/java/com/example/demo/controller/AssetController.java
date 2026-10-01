@@ -39,6 +39,12 @@ public class AssetController {
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
 
+	@GetMapping("/available")
+	public ResponseEntity<List<AssetDto>> getAllAvailableAssets() {
+		var list = assetServ.getAllAvailableAssets();
+		return ResponseEntity.status(HttpStatus.OK).body(list);
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<AssetDto> getAssetById(@PathVariable Long id) {
 
@@ -67,4 +73,14 @@ public class AssetController {
 	public ResponseEntity<Long> getTotalAssetsCount() {
 		return ResponseEntity.status(HttpStatus.OK).body(assetServ.getTotalAssetCount());
 	}
+	
+	@PutMapping("/update/quantity/{id}")
+	public ResponseEntity<ResponseDto> updateAssetQuantity(@PathVariable Long id) {
+
+		assetServ.updateAssetQuantity(id);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto("Asset quantity is reduced successfully", HttpStatus.OK));
+	}
+	 
 }

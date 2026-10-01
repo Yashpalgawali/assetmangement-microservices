@@ -21,5 +21,5 @@ public class AssetDto {
 	
 	Integer qty;
 	
-	AssetTypeDto assetTypeDto;
+	AssetType assetType;
 }

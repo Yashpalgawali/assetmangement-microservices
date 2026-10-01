@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.AssetDto;
 import com.example.demo.dto.DepartmentDto;
@@ -80,19 +81,18 @@ public class EmployeeServImpl implements IEmployeeService {
 					assignAssets.setEmployee(savedEmployee);
 
 					AssignAssets assignedAssets = assignassetrepo.save(assignAssets);
-//					System.err.println("Assigned Asset " + assignedAssets.toString());
 
 					if (assignedAssets != null) {
+						assetClient.updateAssetQuantity(id);
 						ResponseEntity<AssetDto> assetById = assetClient.getAssetById(id);
 						AssetDto assetByClient = assetById.getBody() != null ? assetById.getBody() : null;
 
-						System.err.println("Asset DTO found " + assetByClient.toString());
-
 						AssignAssetHistory assignHistory = new AssignAssetHistory();
 						assignHistory.setAssetId(id);
+						assignHistory.setEmpId(savedEmployee.getEmployeeId());
 						assignHistory.setEmpName(savedEmployee.getEmployeeName());
 						assignHistory.setAssetName(assetByClient.getAssetName());
-						assignHistory.setAssettype(assetByClient.getAssetTypeDto().getAssetType());
+						assignHistory.setAssettype(assetByClient.getAssetType().getAssetType());
 						assignHistory.setAssignedDate(dateFormatter.format(LocalDateTime.now()));
 						assignHistory.setAssignedTime(timeFormatter.format(LocalDateTime.now()));
 
@@ -118,8 +118,6 @@ public class EmployeeServImpl implements IEmployeeService {
 			DepartmentDto departmentDto = deptClient.getDepartmentDto(correlationId, mappedEmp.getDepartmentId());
 
 			if (departmentDto != null) {
-
-				System.err.println("Department DTO Body  " + departmentDto.toString());
 				mappedEmp.setCompanyId(departmentDto.getCompanyId());
 				mappedEmp.setCompanyName(departmentDto.getCompanyName());
 				mappedEmp.setDepartmentName(departmentDto.getDepartmentName());
@@ -141,8 +139,6 @@ public class EmployeeServImpl implements IEmployeeService {
 			} else {
 				mappedEmp.setDesignationName("");
 			}
-
-			System.err.println("Mapped Employee " + mappedEmp.toString());
 
 			return mappedEmp;
 		}
@@ -180,7 +176,6 @@ public class EmployeeServImpl implements IEmployeeService {
 	@Override
 	public List<EmployeeDto> getAllEmployees(String correlationId) {
 		var empList = emprepo.findAll();
-//		empList.forEach(System.out::print);
 
 		if (empList.size() > 0) {
 			return getEmployeeListMappedToDTO(correlationId, empList);
@@ -194,15 +189,13 @@ public class EmployeeServImpl implements IEmployeeService {
 			EmployeeDto dto = EmployeeMapper.mapToEmployeeDto(emp, new EmployeeDto());
 
 			ResponseEntity<DesignationDto> designationById = desigClient.getDesignationById(emp.getDesignationId());
-			System.err.println("inside getEmployeeListMappedToDTO() \n Desgination from desigfeignclient is "
-					+ designationById.toString());
 
 			if (designationById.getBody() != null) {
 				dto.setDesignationName(designationById.getBody().getDesignationName());
 			}
 
 			DepartmentDto departmentDto = deptClient.getDepartmentDto(correlationId, emp.getDepartmentId());
-			System.err.println("Department from deptfeign client is " + departmentDto.toString());
+
 			if (departmentDto != null) {
 				dto.setDepartmentName(departmentDto.getDepartmentName());
 				dto.setCompanyName(departmentDto.getCompanyName());
@@ -214,6 +207,7 @@ public class EmployeeServImpl implements IEmployeeService {
 	}
 
 	@Override
+	@Transactional
 	public void updateEmployee(String correlationId, EmployeeDto empDto) {
 		this.getEmployeeById(correlationId, empDto.getEmployeeId());
 

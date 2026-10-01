@@ -65,7 +65,7 @@ public class AssignAssetServImpl implements IAssignAssetsService {
 			if(assetBody!=null) {
 				AssetDto body = assetBody.getBody();
 				dto.setAssetName(body.getAssetName());
-				dto.setAssettype(body.getAssetTypeDto().getAssetType());
+				dto.setAssettype(body.getAssetType().getAssetType());
 				dto.setEmpName(employee.getEmployeeName());
 				
 			}
@@ -98,7 +98,8 @@ public class AssignAssetServImpl implements IAssignAssetsService {
 				if(assetById.getBody()!=null) {
 					AssetDto astDto = assetById.getBody();
 					assetDto.setAssetName(astDto.getAssetName());
-					assetDto.setAssettype(astDto.getAssetTypeDto().getAssetType());
+					
+					assetDto.setAssettype(astDto.getAssetType().getAssetType());
 				}
 				else {
 					assetDto.setAssetName("");
@@ -109,6 +110,7 @@ public class AssignAssetServImpl implements IAssignAssetsService {
 				assetDto.setEmpName(foundEmp.getEmployeeName());
 				assetDto.setEmpId(foundEmp.getEmployeeId());
 				
+				System.err.println("Assigned Assets DTO result is "+assetDto.toString());
 				return assetDto;
 				
 			}).collect(Collectors.toList());
