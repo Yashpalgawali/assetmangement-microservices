@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.demo.dto.DesignationDto;
 
-@FeignClient(name = "designation", fallback = DepartmentFallBack.class)
+@FeignClient(name = "designation", fallback = DesignationFallBack.class)
 public interface DesignationFeignClient {
 
-	@GetMapping("/{id}")
+	@GetMapping("/api/{id}")
 	public ResponseEntity<DesignationDto> getDesignationById(@PathVariable Long id );
 	
-	@GetMapping("/")
+	@GetMapping("/api/")
 	public ResponseEntity<List<DesignationDto>> getAllDesignations();
 }

@@ -13,7 +13,7 @@ import com.example.demo.dto.Company;
 @FeignClient(name = "company", fallback = CompanyFallBack.class)
 public interface CompanyFeignClient {
 
-	@GetMapping(value = "/api/{id}", produces = "application/json")
+	@GetMapping(value = "/api/{id}")
 	public ResponseEntity<Company> getCompanyById(@RequestHeader("assetmanagement-correlation-id") String correlationId,
 			@PathVariable Long id);
 

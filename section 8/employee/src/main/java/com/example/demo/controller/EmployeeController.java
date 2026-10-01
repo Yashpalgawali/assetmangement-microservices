@@ -39,9 +39,9 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/")
-	public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
+	public ResponseEntity<List<EmployeeDto>> getAllEmployees(@RequestHeader("assetmanagement-correlation-id") String correlationId) {
 
-		var list = employeeService.getAllEmployees();
+		var list = employeeService.getAllEmployees(correlationId);
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
 
@@ -53,9 +53,9 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/name/{name}")
-	public ResponseEntity<EmployeeDto> getEmployeeByName(@PathVariable String name) {
+	public ResponseEntity<EmployeeDto> getEmployeeByName(@RequestHeader("assetmanagement-correlation-id") String correlationId, @PathVariable String name) {
 
-		var employee = employeeService.getEmployeeByName(name);
+		var employee = employeeService.getEmployeeByName(correlationId,name);
 		return ResponseEntity.status(HttpStatus.OK).body(employee);
 	}
 

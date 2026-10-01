@@ -85,8 +85,7 @@ public class DepartmentServImpl implements IDepartmentService {
 	@Override
 	public List<DepartmentDto> getAllDepartments(String correlationId) {
 		var list = deptrepo.findAll();
-		if (list.size() > 0) {
-//			List<Company> compList = companyClient.getAllCompaniesList(correlationId).getBody();
+		if (list.size() > 0) { 
 			ResponseEntity<List<Company>> response =
 		            companyClient.getAllCompaniesList(correlationId);
 			  List<Company> compList = response.getBody() != null ? response.getBody() : Collections.emptyList();
@@ -96,10 +95,7 @@ public class DepartmentServImpl implements IDepartmentService {
 
 				DepartmentDto deptDto = new DepartmentDto();
 				deptDto.setDepartmentId(dept.getDepartmentId());
-				deptDto.setDepartmentName(dept.getDepartmentName());
-
-//				Predicate<? super Company> predicate = p -> dept.getCompanyId() == p.getCompanyId();
-//				Optional<Company> company = compList.stream().filter(predicate).findFirst();
+				deptDto.setDepartmentName(dept.getDepartmentName()); 
 				
 				Optional<Company> company =
 	                        compList.stream()
@@ -133,12 +129,24 @@ public class DepartmentServImpl implements IDepartmentService {
 
 		logger.info(" Inside getDepartmentById() in department Controller Found company {} ", companyById);
 
-		if (null != companyById) {
-			Company comp = companyById.getBody();
-			mapToDepartmentDto.setCompanyName(comp.getCompanyName());
+		if (companyById != null && companyById.getBody() != null) {
+
+		    Company comp = companyById.getBody();
+
+		    mapToDepartmentDto.setCompanyName(
+		            comp.getCompanyName()
+		    );
+
 		} else {
-			mapToDepartmentDto.setCompanyName("");
+
+		    mapToDepartmentDto.setCompanyName("");
 		}
+//		if (null != companyById) {
+//			Company comp = companyById.getBody();
+//			mapToDepartmentDto.setCompanyName(comp.getCompanyName());
+//		} else {
+//			mapToDepartmentDto.setCompanyName("");
+//		}
 		return mapToDepartmentDto;
 	}
 

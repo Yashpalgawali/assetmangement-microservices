@@ -85,9 +85,9 @@ public class EmployeeServImpl implements IEmployeeService {
 					if (assignedAssets != null) {
 						ResponseEntity<AssetDto> assetById = assetClient.getAssetById(id);
 						AssetDto assetByClient = assetById.getBody() != null ? assetById.getBody() : null;
-						
-						System.err.println("Asset DTO found "+assetByClient.toString());
-						
+
+						System.err.println("Asset DTO found " + assetByClient.toString());
+
 						AssignAssetHistory assignHistory = new AssignAssetHistory();
 						assignHistory.setAssetId(id);
 						assignHistory.setEmpName(savedEmployee.getEmployeeName());
@@ -112,17 +112,14 @@ public class EmployeeServImpl implements IEmployeeService {
 	public EmployeeDto getEmployeeById(String correlationId, Long empId) {
 		Optional<Employee> foundEmp = emprepo.findById(empId);
 		if (foundEmp.isPresent()) {
-			System.err.println("Found Employee "+foundEmp.get().toString());
+			System.err.println("Found Employee " + foundEmp.get().toString());
 			EmployeeDto mappedEmp = EmployeeMapper.mapToEmployeeDto(foundEmp.get(), new EmployeeDto());
-				
-			DepartmentDto departmentDto = deptClient.getDepartmentDto(correlationId,
-					mappedEmp.getDepartmentId());
-			
-//			System.err.println("Department DTO Body  " +departmentDto.getBody().toString());
-			
+
+			DepartmentDto departmentDto = deptClient.getDepartmentDto(correlationId, mappedEmp.getDepartmentId());
+
 			if (departmentDto != null) {
-				
-				System.err.println("DePartment DTO Body  "+departmentDto.toString());
+
+				System.err.println("Department DTO Body  " + departmentDto.toString());
 				mappedEmp.setCompanyId(departmentDto.getCompanyId());
 				mappedEmp.setCompanyName(departmentDto.getCompanyName());
 				mappedEmp.setDepartmentName(departmentDto.getDepartmentName());
@@ -136,15 +133,17 @@ public class EmployeeServImpl implements IEmployeeService {
 
 			ResponseEntity<DesignationDto> designationById = desigClient
 					.getDesignationById(mappedEmp.getDesignationId());
-			if (designationById != null) {
-				DesignationDto designationBody = designationById.getBody();
+
+			DesignationDto designationBody = designationById.getBody();
+			if (designationBody != null) {
+
 				mappedEmp.setDesignationName(designationBody.getDesignationName());
 			} else {
 				mappedEmp.setDesignationName("");
 			}
-			
-			System.err.println("Mapped Employee "+mappedEmp.toString());
-			
+
+			System.err.println("Mapped Employee " + mappedEmp.toString());
+
 			return mappedEmp;
 		}
 
@@ -152,7 +151,7 @@ public class EmployeeServImpl implements IEmployeeService {
 	}
 
 	@Override
-	public EmployeeDto getEmployeeByName(String name) {
+	public EmployeeDto getEmployeeByName(String correlationId, String name) {
 		Optional<Employee> foundEmp = emprepo.findByEmployeeName(name);
 		if (foundEmp.isPresent()) {
 			return EmployeeMapper.mapToEmployeeDto(foundEmp.get(), new EmployeeDto());
@@ -161,53 +160,54 @@ public class EmployeeServImpl implements IEmployeeService {
 	}
 
 	@Override
-	public List<EmployeeDto> getEmployeeByDepartment(Long deptId) {
+	public List<EmployeeDto> getEmployeeByDepartment(String correlationId, Long deptId) {
 		var empList = emprepo.findByDepartmentId(deptId);
 		if (empList.size() > 0) {
-			return getEmployeeListMappedToDTO(empList);
+			return getEmployeeListMappedToDTO(correlationId, empList);
 		}
 		throw new ResourceNotModifiedException("Employee", "Department", "" + deptId);
 	}
 
 	@Override
-	public List<EmployeeDto> getEmployeeByCompany(Long compId) {
+	public List<EmployeeDto> getEmployeeByCompany(String correlationId, Long compId) {
 		var empList = emprepo.findByCompanyId(compId);
 		if (empList.size() > 0) {
-			return getEmployeeListMappedToDTO(empList);
+			return getEmployeeListMappedToDTO(correlationId, empList);
 		}
 		throw new ResourceNotFoundException("Employee", "Company", "" + compId);
 	}
 
 	@Override
-	public List<EmployeeDto> getAllEmployees() {
+	public List<EmployeeDto> getAllEmployees(String correlationId) {
 		var empList = emprepo.findAll();
-		empList.forEach(System.out::print);
+//		empList.forEach(System.out::print);
 
-		System.err.println("Employee List " + empList.toString());
 		if (empList.size() > 0) {
-			return getEmployeeListMappedToDTO(empList);
+			return getEmployeeListMappedToDTO(correlationId, empList);
 		}
 		throw new ResourceNotFoundException("Employee", "List", "");
 	}
 
-	private List<EmployeeDto> getEmployeeListMappedToDTO(List<Employee> empList) {
-		return  empList.stream().map((emp) -> {
+	private List<EmployeeDto> getEmployeeListMappedToDTO(String correlationId, List<Employee> empList) {
+		return empList.stream().map((emp) -> {
 
 			EmployeeDto dto = EmployeeMapper.mapToEmployeeDto(emp, new EmployeeDto());
 
 			ResponseEntity<DesignationDto> designationById = desigClient.getDesignationById(emp.getDesignationId());
+			System.err.println("inside getEmployeeListMappedToDTO() \n Desgination from desigfeignclient is "
+					+ designationById.toString());
 
 			if (designationById.getBody() != null) {
 				dto.setDesignationName(designationById.getBody().getDesignationName());
 			}
 
-			DepartmentDto departmentDto = deptClient.getDepartmentDto(null, emp.getDepartmentId());
-			
-			if(departmentDto!=null) {
+			DepartmentDto departmentDto = deptClient.getDepartmentDto(correlationId, emp.getDepartmentId());
+			System.err.println("Department from deptfeign client is " + departmentDto.toString());
+			if (departmentDto != null) {
 				dto.setDepartmentName(departmentDto.getDepartmentName());
 				dto.setCompanyName(departmentDto.getCompanyName());
 			}
-			
+
 			return dto;
 
 		}).collect(Collectors.toList());

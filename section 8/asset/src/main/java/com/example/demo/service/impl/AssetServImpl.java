@@ -55,7 +55,11 @@ public class AssetServImpl implements IAssetService {
 	public AssetDto getAssetById(Long id) {
 
 		Asset found = assetrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", "" + id));
-		return AssetMapper.mapToAssetDto(found, new AssetDto());
+		AssetType assetType = assetTypeRepo.findById(found.getAssetType().getAssetTypeId()).orElseThrow(()-> new ResourceNotFoundException("Asset Type", "Id", ""+found.getAssetType().getAssetTypeId()));
+		
+		found.setAssetType(assetType);
+		AssetDto mappedAssetDto = AssetMapper.mapToAssetDto(found, new AssetDto());
+		return mappedAssetDto;
 	}
 
 	@Override
@@ -63,6 +67,10 @@ public class AssetServImpl implements IAssetService {
 
 		Asset found = assetrepo.findByAssetName(name)
 				.orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", name));
+		
+		AssetType assetType = assetTypeRepo.findById(found.getAssetType().getAssetTypeId()).orElseThrow(()-> new ResourceNotFoundException("Asset Type", "Id", ""+found.getAssetType().getAssetTypeId()));
+		
+		found.setAssetType(assetType);
 		return AssetMapper.mapToAssetDto(found, new AssetDto());
 	}
 

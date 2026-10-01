@@ -73,3 +73,19 @@ logging:
     com:
       example:
         demo: DEBUG
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      sliding-window-size: 10
+      permitted-number-of-calls-in-half-open-state: 3
+      failure-rate-threshold: 50
+      wait-duration-in-open-state: 10000
+
+# Resilience RateLimiter
+resilience4j.ratelimiter:
+  configs:
+    default:
+      timeout-duration: 1000
+      limit-refresh-period: 5000
+      limit-for-period: 1

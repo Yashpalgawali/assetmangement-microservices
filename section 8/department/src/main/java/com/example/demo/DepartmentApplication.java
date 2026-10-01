@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import com.example.demo.dto.DepartmentContactInfoDto;
 
 @SpringBootApplication
-@EnableConfigurationProperties(value = DepartmentContactInfoDto.class)
 @EnableFeignClients
+@EnableConfigurationProperties(value = DepartmentContactInfoDto.class)
 public class DepartmentApplication {
 
 	public static void main(String[] args) {

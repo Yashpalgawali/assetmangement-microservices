@@ -13,7 +13,7 @@ public class CompanyFallBack implements CompanyFeignClient {
 
 	@Override
 	public ResponseEntity<Company> getCompanyById(String correlationId, Long id) {
-		
+		  System.err.println("inside companyfallback for get companybyid "+id);
 		  Company company = new Company();
 	      company.setCompanyName("");
 	      return ResponseEntity.ok(company);
