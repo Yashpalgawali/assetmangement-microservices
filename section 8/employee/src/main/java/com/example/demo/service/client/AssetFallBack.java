@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.demo.dto.AssetDto;
+import com.example.demo.dto.ResponseDto;
 
 @Component
 public class AssetFallBack implements AssetFeignClient {
@@ -28,6 +29,12 @@ public class AssetFallBack implements AssetFeignClient {
 	@Override
 	public ResponseEntity<List<AssetDto>> getAllAssets() {
 		return ResponseEntity.ok(Collections.emptyList());
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> updateAssetQuantity(Long id) {
+		// TODO Auto-generated method stub
+		return ResponseEntity.ok(null);
 	}
 
 }
