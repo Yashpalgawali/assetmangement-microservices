@@ -1,5 +1,7 @@
 package com.example.demo.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,43 +44,113 @@ public class AssignAssetServImpl implements IAssignAssetsService {
 	}
 
 	@Override
-	public List<AssignAssetsDto> getAllAssignedAssets() {
-		List<AssignAssets> assignedList = assignAssetRepo.findAll();
-		
-		Map<Long, String> collect = assignedList.stream().map(asset->{
-			
-			AssignAssetsDto dto = new AssignAssetsDto();
-			EmployeeDto employee = empserv.getEmployeeById(null, asset.getEmployee().getEmployeeId());
-			
-			DepartmentDto departmentClient = deptClient.getDepartmentDto(null, asset.getEmployee().getDepartmentId());
-			if(departmentClient !=null) {
-				
-				dto.setCompany(departmentClient.getCompanyName());
-				dto.setDepartment(departmentClient.getDepartmentName());
-			}
-			else {
-				dto.setCompany("");
-				dto.setDepartment("");
-			}
-			
-			ResponseEntity<AssetDto> assetBody = assetClient.getAssetById(asset.getAssetId());
-			if(assetBody!=null) {
-				AssetDto body = assetBody.getBody();
-				dto.setAssetName(body.getAssetName());
-				dto.setAssettype(body.getAssetType().getAssetType());
-				dto.setEmpName(employee.getEmployeeName());
-				
-			}
-			return dto;
-			
-		}).collect(Collectors.groupingBy(AssignAssetsDto::getEmpId,
-				 Collectors.mapping(
-						 AssignAssetsDto::getAssetName,
-	                        Collectors.joining(",")
-	                )
-				));
-		System.err.println("Collected Map result is "+collect.toString());
-		return null;
+	public List<AssignAssetsDto> getAllAssignedAssets(String correlationId) {
+		 List<AssignAssets> assignedList = assignAssetRepo.findAll();
+
+		    Map<Long, AssignAssetsDto> employeeMap = new LinkedHashMap<>();
+
+		    for (AssignAssets asset : assignedList) {
+
+		        Long empId = asset.getEmployee().getEmployeeId();
+
+		        AssignAssetsDto dto = employeeMap.get(empId);
+
+		        if (dto == null) {
+
+		            dto = new AssignAssetsDto();
+		            dto.setEmpId(empId);
+
+		            EmployeeDto employee =
+		                    empserv.getEmployeeById(correlationId, empId);
+
+		            if (employee != null) {
+		                dto.setEmpName(employee.getEmployeeName());
+		            }
+
+		            DepartmentDto department =
+		                    deptClient.getDepartmentDto(
+		                            correlationId,
+		                            asset.getEmployee().getDepartmentId()
+		                    );
+
+		            if (department != null) {
+		                dto.setCompany(department.getCompanyName());
+		                dto.setDepartment(department.getDepartmentName());
+		            } else {
+		                dto.setCompany("");
+		                dto.setDepartment("");
+		            }
+
+		            dto.setAssetName("");
+
+		            employeeMap.put(empId, dto);
+		        }
+
+		        ResponseEntity<AssetDto> assetBody =
+		                assetClient.getAssetById(asset.getAssetId());
+
+		        if (assetBody != null && assetBody.getBody() != null) {
+
+		            AssetDto body = assetBody.getBody();
+
+		            String currentAssets = dto.getAssetName();
+
+		            if (currentAssets == null || currentAssets.isEmpty()) {
+		                dto.setAssetName(body.getAssetName());
+		            } else {
+		                dto.setAssetName(
+		                        currentAssets + "," + body.getAssetName()
+		                );
+		            }
+
+		            if (body.getAssetType() != null) {
+		                dto.setAssettype(
+		                        body.getAssetType().getAssetType()
+		                );
+		            }
+		        }
+		    }
+
+		    return new ArrayList<>(employeeMap.values());
+//		List<AssignAssets> assignedList = assignAssetRepo.findAll();
+//		
+//		Map<Long, String> collect = assignedList.stream().map(asset->{
+//			
+//			AssignAssetsDto dto = new AssignAssetsDto();
+//			EmployeeDto employee = empserv.getEmployeeById(correlationId, asset.getEmployee().getEmployeeId());
+//			
+//			DepartmentDto departmentClient = deptClient.getDepartmentDto(correlationId, asset.getEmployee().getDepartmentId());
+//			if(departmentClient !=null) {
+//				System.err.println("Department Client is called "+departmentClient.toString());
+//				dto.setCompany(departmentClient.getCompanyName());
+//				dto.setDepartment(departmentClient.getDepartmentName());
+//			}
+//			else {
+//				System.err.println("Department Client is NOT Called ");
+//				dto.setCompany("");
+//				dto.setDepartment("");
+//			}
+//			
+//			ResponseEntity<AssetDto> assetBody = assetClient.getAssetById(asset.getAssetId());
+//			if(assetBody!=null) {
+//				
+//				System.err.println("Asset Client is called "+assetBody.toString());
+//				AssetDto body = assetBody.getBody();
+//				dto.setAssetName(body.getAssetName());
+//				dto.setAssettype(body.getAssetType().getAssetType());
+//				dto.setEmpName(employee.getEmployeeName());
+//				
+//			}
+//			return dto;
+//			
+//		}).collect(Collectors.groupingBy(AssignAssetsDto::getEmpId,
+//				 Collectors.mapping(
+//						 AssignAssetsDto::getAssetName,
+//	                        Collectors.joining(",")
+//	                )
+//				));
+//		System.err.println("Collected Map result is "+collect.toString());
+//		return null;
 	}
 
 	@Override

@@ -80,8 +80,8 @@ public class EmployeeController {
 		return ResponseEntity.status(HttpStatus.OK).body(assignedAssetsList);
 	}
 	@GetMapping("/viewassignedassets")
-	public ResponseEntity<List<AssignAssetsDto>> getAlAssignedAssets() {
-		List<AssignAssetsDto> assignedAssetsList = assignassetserv.getAllAssignedAssets();
+	public ResponseEntity<List<AssignAssetsDto>> getAlAssignedAssets(@RequestHeader("assetmanagement-correlation-id") String correlationId) {
+		List<AssignAssetsDto> assignedAssetsList = assignassetserv.getAllAssignedAssets(correlationId);
 		return ResponseEntity.status(HttpStatus.OK).body(assignedAssetsList);
 	}
 }
