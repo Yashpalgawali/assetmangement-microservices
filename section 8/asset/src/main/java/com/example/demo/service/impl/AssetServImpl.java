@@ -57,15 +57,16 @@ public class AssetServImpl implements IAssetService {
 	public AssetDto getAssetById(Long id) {
 
 		Asset found = assetrepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", "" + id));
-		AssetType assetType = assetTypeRepo.findById(found.getAssetType().getAssetTypeId()).orElseThrow(()-> new ResourceNotFoundException("Asset Type", "Id", ""+found.getAssetType().getAssetTypeId()));
-		
+		AssetType assetType = assetTypeRepo.findById(found.getAssetType().getAssetTypeId()).orElseThrow(
+				() -> new ResourceNotFoundException("Asset Type", "Id", "" + found.getAssetType().getAssetTypeId()));
+
 		AssetDto mappedAssetDto = AssetMapper.mapToAssetDto(found, new AssetDto());
-		System.err.println("Mapped Asset DTO "+mappedAssetDto.toString());
-		
+		System.err.println("Mapped Asset DTO " + mappedAssetDto.toString());
+
 		mappedAssetDto.setAssetType(assetType);
-		
-		System.err.println("mappedAssetDTO after adding assetType in DTO "+mappedAssetDto.toString());
-		
+
+		System.err.println("mappedAssetDTO after adding assetType in DTO " + mappedAssetDto.toString());
+
 		return mappedAssetDto;
 	}
 
@@ -74,9 +75,10 @@ public class AssetServImpl implements IAssetService {
 
 		Asset found = assetrepo.findByAssetName(name)
 				.orElseThrow(() -> new ResourceNotFoundException("Asset ", "ID", name));
-		
-		AssetType assetType = assetTypeRepo.findById(found.getAssetType().getAssetTypeId()).orElseThrow(()-> new ResourceNotFoundException("Asset Type", "Id", ""+found.getAssetType().getAssetTypeId()));
-		
+
+		AssetType assetType = assetTypeRepo.findById(found.getAssetType().getAssetTypeId()).orElseThrow(
+				() -> new ResourceNotFoundException("Asset Type", "Id", "" + found.getAssetType().getAssetTypeId()));
+
 		found.setAssetType(assetType);
 		return AssetMapper.mapToAssetDto(found, new AssetDto());
 	}
@@ -85,16 +87,16 @@ public class AssetServImpl implements IAssetService {
 	public List<AssetDto> getAllAssets() {
 
 		var assetList = assetrepo.findAll();
-			
+
 		if (assetList.size() < 0) {
 			throw new ResourceNotFoundException("Asset ", "List", "asset ");
 		}
 		List<AssetDto> assetDtoList = assetList.stream().map(a -> {
-			
+
 			return AssetMapper.mapToAssetDto(a, new AssetDto());
 
 		}).collect(Collectors.toList());
-		
+
 		assetDtoList.forEach(System.err::print);
 		return assetDtoList;
 	}
@@ -117,7 +119,7 @@ public class AssetServImpl implements IAssetService {
 
 	@Override
 	public Long getTotalAssetCount() {
-		System.err.println("Assets count is "+assetrepo.count());
+		System.err.println("Assets count is " + assetrepo.count());
 		return assetrepo.count();
 	}
 
@@ -128,9 +130,9 @@ public class AssetServImpl implements IAssetService {
 			throw new ResourceNotFoundException("Asset ", "List", "asset ");
 		}
 		List<AssetDto> assetDtoList = assetList.stream().map(a -> {
-			
+
 			return AssetMapper.mapToAssetDto(a, new AssetDto());
-			
+
 		}).collect(Collectors.toList());
 		System.err.println("Assets with qauntity more than 0");
 		assetDtoList.forEach(System.err::print);
@@ -141,12 +143,23 @@ public class AssetServImpl implements IAssetService {
 	@Transactional
 	public void updateAssetQuantity(Long assetId) {
 		AssetDto dto = this.getAssetById(assetId);
-		
-		int res = assetrepo.UpdateAssetQty(assetId, dto.getQty()-1);
-		if(res < 0) {
-			throw new ResourceNotModifiedException("Asset", "Quantiy", ""+assetId); 
+
+		int res = assetrepo.UpdateAssetQty(assetId, dto.getQty() - 1);
+		if (res < 0) {
+			throw new ResourceNotModifiedException("Asset", "Quantiy", "" + assetId);
 		}
-		
+
+	}
+
+	@Override
+	public void updateAssetQuantityByAssetId(Long assetId, Integer qty) {
+
+		AssetDto dto = this.getAssetById(assetId);
+
+		int res = assetrepo.UpdateAssetQty(assetId, qty);
+		if (res < 0) {
+			throw new ResourceNotModifiedException("Asset", "Quantiy", "" + assetId);
+		}
 	}
 
 }

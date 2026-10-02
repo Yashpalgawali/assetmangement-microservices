@@ -19,6 +19,8 @@ public interface IAssetService {
 	public void updateAsset(AssetDto Asset);
 	
 	public void updateAssetQuantity(Long assetId);
+	
+	public void updateAssetQuantityByAssetId(Long assetId, Integer qty);
 		
 	public Long getTotalAssetCount();
 }

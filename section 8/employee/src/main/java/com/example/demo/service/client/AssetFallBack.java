@@ -37,4 +37,10 @@ public class AssetFallBack implements AssetFeignClient {
 		return ResponseEntity.ok(null);
 	}
 
+	@Override
+	public ResponseEntity<ResponseDto> updateAssetQuantitybyAssetId(Long id, Integer qty) {
+		// TODO Auto-generated method stub
+		return ResponseEntity.ok(null);
+	}
+
 }

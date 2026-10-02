@@ -2,16 +2,18 @@ package com.example.demo.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.AssetDto;
+import com.example.demo.dto.AssetType;
 import com.example.demo.dto.DepartmentDto;
 import com.example.demo.dto.DesignationDto;
 import com.example.demo.dto.EmployeeDto;
@@ -26,7 +28,6 @@ import com.example.demo.mapper.EmployeeMapper;
 import com.example.demo.repository.AssignAssetHistoryRepository;
 import com.example.demo.repository.AssignAssetRepository;
 import com.example.demo.repository.EmployeeRepository;
-import com.example.demo.service.IAssignAssetsService;
 import com.example.demo.service.IEmployeeService;
 import com.example.demo.service.client.AssetFeignClient;
 import com.example.demo.service.client.DepartmentFeignClient;
@@ -209,14 +210,260 @@ public class EmployeeServImpl implements IEmployeeService {
 	@Override
 	@Transactional
 	public void updateEmployee(String correlationId, EmployeeDto empDto) {
-		this.getEmployeeById(correlationId, empDto.getEmployeeId());
+
+		System.err.println("Inside updateEmployee() "+empDto.toString());
+		String new_assets = "";
+		List<Long> nl = empDto.getAsset_ids();
+
+		// this.getEmployeeById(correlationId, empDto.getEmployeeId());
 
 		int res = emprepo.updateEmployee(empDto.getEmployeeId(), empDto.getEmployeeName(), empDto.getDepartmentId(),
 				empDto.getCompanyId());
 
+		if (nl != null) {
+			if (nl.size() > 0) {
+				for (int i = 0; i < nl.size(); i++) {
+					if (i == 0) {
+						new_assets = String.valueOf(nl.get(i));
+					} else {
+						new_assets = new_assets + "," + nl.get(i);
+					}
+				}
+				AssignAssets isassigned = null;
+
+				// Fetch managed Employee entity
+				EmployeeDto managedEmp = this.getEmployeeById(correlationId, empDto.getEmployeeId());
+
+				List<AssignAssets> assigned_assets = assignassetrepo
+						.getAllAssignedAssetsByEmpId(empDto.getEmployeeId());
+
+				String[] ol_assets = new String[assigned_assets.size()];
+				String[] nw_assets = new String[new_assets.length()];
+
+				nw_assets = new_assets.split(",");
+				for (int i = 0; i < assigned_assets.size(); i++) {
+
+					ol_assets[i] = assigned_assets.get(i).getAssetId().toString();
+//			ol_assets[i] = assigned_assets.get(i).getAsset().getAsset_id().toString();
+				}
+
+				if (ol_assets.length == nw_assets.length) {
+					List<String> olist = Arrays.asList(ol_assets);
+					List<String> nlist = Stream.of(new_assets.split(",")).collect(Collectors.toList());
+
+					for (int i = 0; i < ol_assets.length; i++) {
+						if (nlist.contains(ol_assets[i])) {
+							continue;
+						} else {
+							Long asid = Long.valueOf(ol_assets[i]);
+							int output = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid,
+									empDto.getEmployeeId());
+
+							if (output > 0) {
+
+								ResponseEntity<AssetDto> assetById = assetClient.getAssetById(asid);
+								AssetDto assetDto = null;
+								if (assetById != null) {
+									assetDto = assetById.getBody();
+								}
+
+//						int qty = assetrepo.getQuantiyByAssetId(asid);
+//						qty+=1;
+//						
+//						assetrepo.updateAssetQuantityByAssetId(asid, ""+qty);
+
+//						AssetDto ast = new AssetDto();
+//						
+//						AssetDto getasset = assetrepo.findById(asid).get();
+//						
+//						AssetType atype = new AssetType();
+//						
+//						atype = atyperepo.findById(getasset.getAtype().getType_id()).get();
+//						
+//						ast.setAtype(atype);
+//						
+//						ast.setAsset_id(asid);
+//						ast.setAsset_name(getasset.getAsset_name());
+//						ast.setAsset_number(getasset.getAsset_number());
+//						ast.setModel_number(getasset.getModel_number());
+//						ast.setQuantity(getasset.getQuantity());
+
+								AssignAssetHistory ahist = new AssignAssetHistory();
+								ahist.setAssetName(assetDto.getAssetName());
+
+								ahist.setEmpName(managedEmp.getEmployeeName());
+
+								ahist.setUpdateDate(dateFormatter.format(LocalDateTime.now()));
+								ahist.setUpdateTime(timeFormatter.format(LocalDateTime.now()));
+								ahist.setAssettype(assetDto.getAssetType().getAssetType());
+
+								assignassethistrepo.save(ahist);
+
+							}
+						}
+					}
+
+					for (int i = 0; i < nw_assets.length; i++) {
+						if (olist.contains(nw_assets[i])) {
+							continue;
+						} else {
+							AssignAssets assignasset = new AssignAssets();
+							Long asid = Long.valueOf(nw_assets[i]);
+							int qty = 0;
+
+							ResponseEntity<AssetDto> assetById = assetClient.getAssetById(asid);
+							AssetDto assetDto = null;
+							if (assetById != null) {
+								assetDto = assetById.getBody();
+							}
+
+							Long astid = Long.valueOf(asid);
+							AssetDto ast = new AssetDto();
+
+							// ast.setAtype(assetDto.getAssetType());
+
+//					ast.setAsset_id(astid);
+//					ast.setAsset_name(getasset.getAsset_name());
+//					ast.setAsset_number(getasset.getAsset_number());
+//					ast.setModel_number(getasset.getModel_number());
+//					ast.setQuantity(getasset.getQuantity());
+
+							assignasset.setEmployee(EmployeeMapper.mapToEmployee(managedEmp, new Employee()));
+							assignasset.setAssetId(astid);
+
+//					assignasset.setAssign_date(dateFormatter.format(LocalDateTime.now()));
+//					assignasset.setAssign_time(dtime.format(LocalDateTime.now()));
+//					
+							isassigned = assignassetrepo.save(assignasset);
+
+							if (isassigned != null) {
+								qty = assetDto.getQty() -1 ;
+								
+								assetClient.updateAssetQuantitybyAssetId(astid, (Integer) qty);
+
+								AssignAssetHistory ahist = new AssignAssetHistory();
+
+								ahist.setAssetName(assetDto.getAssetName());
+								ahist.setEmpName(managedEmp.getEmployeeName());
+//						ahist.setOperation_date(dateformatter.format(LocalDateTime.now()));
+//						ahist.setOperation_time(dtime.format(LocalDateTime.now()));
+//						ahist.setOperation("Asset Assigned");
+								assignassethistrepo.save(ahist);
+
+							}
+						}
+					}
+				}
+
+				// If AssetDto to be assigned are greater than the Already assigned assets
+				if (nw_assets.length > ol_assets.length) {
+					List<String> olist = Arrays.asList(ol_assets);
+					List<String> nlist = Stream.of(new_assets.split(",")).collect(Collectors.toList());
+
+					for (int i = 0; i < nw_assets.length; i++) {
+						if (olist.contains(nw_assets[i])) {
+							continue;
+						} else {
+							AssignAssets assignasset = new AssignAssets();
+							Long asid = Long.valueOf(nw_assets[i]);
+							int qty = 0;
+
+							Long astid = Long.valueOf(asid);
+
+							AssetDto assetDto = getAssetDtoByIdUsingAssetClient(asid);
+
+//					AssetDto ast = new AssetDto();
+//					
+//					assetrepo.findById(astid);
+//					AssetDto getasset = assetrepo.findById(astid).get();
+//					
+//					AssetType atype = new AssetType();
+//					
+//					atype = atyperepo.findById(getasset.getAtype().getType_id()).get();
+//					
+//					ast.setAtype(atype);
+//					
+//					ast.setAsset_id(astid);
+//					ast.setAsset_name(getasset.getAsset_name());
+//					ast.setAsset_number(getasset.getAsset_number());
+//					ast.setModel_number(getasset.getModel_number());
+//					ast.setQuantity(getasset.getQuantity());
+
+							assignasset.setEmployee(EmployeeMapper.mapToEmployee(managedEmp, new Employee()));
+							assignasset.setAssetId(assetDto.getAssetId());
+
+//					assignasset.setAssign_date(ddate.format(LocalDateTime.now()));
+//					assignasset.setAssign_time(dtime.format(LocalDateTime.now()));
+
+							isassigned = assignassetrepo.save(assignasset);
+
+							if (isassigned != null) {
+
+								qty = assetDto.getQty() -1;
+
+								assetClient.updateAssetQuantitybyAssetId(astid, (Integer) qty);
+
+								AssignAssetHistory ahist = new AssignAssetHistory();
+								ahist.setAssetName(assetDto.getAssetName());
+								ahist.setEmpName(managedEmp.getEmployeeName());
+
+								assignassethistrepo.save(ahist);
+							}
+						}
+					}
+				}
+				int output = 0;
+				// If AssetDto to be assigned are smaller than the Already assigned assets
+				if (nw_assets.length < ol_assets.length) {
+//			List<String> olist= List.of(ol_assets);
+//          List<String> nlist= List.of(nw_assets);
+
+					List<String> olist = Arrays.asList(ol_assets);
+					List<String> nlist = Stream.of(new_assets.split(",")).collect(Collectors.toList());
+					for (int i = 0; i < ol_assets.length; i++) {
+						if (nlist.contains(ol_assets[i])) {
+							continue;
+						} else {
+							Long asid = Long.valueOf(ol_assets[i]);
+							output = assignassetrepo.deleteAssignedAssetByEmpidAssetId(asid, empDto.getEmployeeId());
+
+							if (output > 0) {
+								AssetDto assetDto = getAssetDtoByIdUsingAssetClient(asid);
+								int qty = assetDto.getQty();
+								qty += 1;
+
+								assetClient.updateAssetQuantitybyAssetId(asid, (Integer)qty);
+
+								AssignAssetHistory ahist = new AssignAssetHistory();
+
+								ahist.setAssetName(assetDto.getAssetName());
+								ahist.setEmpName(managedEmp.getEmployeeName());
+
+								assignassethistrepo.save(ahist);
+
+							}
+						}
+					}
+				}
+				if (isassigned == null) {
+					throw new GlobalException("Asset(s) are not Updated of Employee " + empDto.getEmployeeName());
+				}
+//			else {
+//				throw new GlobalException("Asset(s) are not Updated of Employee "+emp.getEmp_name());
+//			}
+			}
+		}
 		if (res < 0) {
 			throw new ResourceNotModifiedException("Employee", "ID", "" + empDto.getEmployeeId());
 		}
 	}
 
+	private AssetDto getAssetDtoByIdUsingAssetClient(Long assetId) {
+		ResponseEntity<AssetDto> assetById = assetClient.getAssetById(assetId);
+
+		if (assetById != null) {
+			return assetById.getBody();
+		}
+		return null;
+	}
 }

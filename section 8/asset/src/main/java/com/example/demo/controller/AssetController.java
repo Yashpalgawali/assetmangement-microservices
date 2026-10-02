@@ -82,5 +82,14 @@ public class AssetController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseDto("Asset quantity is reduced successfully", HttpStatus.OK));
 	}
+	
+	@PutMapping("/update/{id}/quantity/{qty}")
+	public ResponseEntity<ResponseDto> updateAssetQuantitybyAssetId(@PathVariable Long id,@PathVariable Integer qty) {
+
+		assetServ.updateAssetQuantityByAssetId(id, qty);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto("Asset quantity is updated to "+qty+" successfully", HttpStatus.OK));
+	}
 	 
 }
