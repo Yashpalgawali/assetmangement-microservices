@@ -94,19 +94,29 @@ public class AssignAssetServImpl implements IAssignAssetsService {
 		            AssetDto body = assetBody.getBody();
 
 		            String currentAssets = dto.getAssetName();
-
+		            String currentAssetTypes = dto.getAssettype();
+		            
 		            if (currentAssets == null || currentAssets.isEmpty()) {
+		            	
 		                dto.setAssetName(body.getAssetName());
 		            } else {
+		            	dto.setAssettype(currentAssetTypes + ","+ body.getAssetType() );
 		                dto.setAssetName(
 		                        currentAssets + "," + body.getAssetName()
 		                );
 		            }
 
 		            if (body.getAssetType() != null) {
-		                dto.setAssettype(
-		                        body.getAssetType().getAssetType()
-		                );
+		            	if (currentAssets == null || currentAssets.isEmpty()) {
+		            		dto.setAssettype(body.getAssetType().getAssetType());
+		            	}
+		            	else {
+		            		dto.setAssettype(currentAssetTypes+","+body.getAssetType().getAssetType());
+		            	}
+		            	
+//		                dto.setAssettype(
+//		                        body.getAssetType().getAssetType()
+//		                );
 		            }
 		        }
 		    }
@@ -161,7 +171,7 @@ public class AssignAssetServImpl implements IAssignAssetsService {
 		if(foundEmp!=null)
 		{
 			List<AssignAssets> assignedAssets = assignAssetRepo.findByEmployee(EmployeeMapper.mapToEmployee(foundEmp, new Employee()));		
-					
+			List<String> astList = new ArrayList<>();
 			return assignedAssets.stream().map(assets -> {
 				AssignAssetsDto assetDto = new AssignAssetsDto();
 				deptClient.getDepartmentDto(correlationId, id);
@@ -177,7 +187,12 @@ public class AssignAssetServImpl implements IAssignAssetsService {
 					assetDto.setAssetName("");
 					assetDto.setAssettype("");
 				}
+//				List<Long> asids= new ArrayList<>();
+//				asids.add(assets.getAssetId());
 				
+				astList.add(String.valueOf(assets.getAssetId()));
+				assetDto.setAssetId(astList);
+//				assetDto.setAssetId(asids);
 				assetDto.setAssignedAssetId(assets.getAssignedAssetId());
 				assetDto.setEmpName(foundEmp.getEmployeeName());
 				assetDto.setEmpId(foundEmp.getEmployeeId());

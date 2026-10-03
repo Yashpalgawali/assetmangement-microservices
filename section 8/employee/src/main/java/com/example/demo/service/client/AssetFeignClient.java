@@ -24,6 +24,6 @@ public interface AssetFeignClient {
 	@PutMapping("/api/update/quantity/{id}")
 	public ResponseEntity<ResponseDto> updateAssetQuantity(@PathVariable Long id);
 	
-	@PutMapping("/update/{id}/quantity/{qty}")
+	@PutMapping("/api/update/{id}/quantity/{qty}")
 	public ResponseEntity<ResponseDto> updateAssetQuantitybyAssetId(@PathVariable Long id,@PathVariable Integer qty);
 }

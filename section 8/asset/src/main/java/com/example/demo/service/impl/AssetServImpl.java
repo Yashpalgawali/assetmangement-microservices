@@ -152,6 +152,7 @@ public class AssetServImpl implements IAssetService {
 	}
 
 	@Override
+	@Transactional
 	public void updateAssetQuantityByAssetId(Long assetId, Integer qty) {
 
 		AssetDto dto = this.getAssetById(assetId);
@@ -159,6 +160,9 @@ public class AssetServImpl implements IAssetService {
 		int res = assetrepo.UpdateAssetQty(assetId, qty);
 		if (res < 0) {
 			throw new ResourceNotModifiedException("Asset", "Quantiy", "" + assetId);
+		}
+		else {
+			System.err.println("Asset Quantity is updated successfully....to "+qty);
 		}
 	}
 

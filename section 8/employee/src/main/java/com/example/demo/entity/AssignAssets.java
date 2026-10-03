@@ -36,4 +36,7 @@ public class AssignAssets {
 
 	Long assetId;
 
+	String assetAssignDate;
+	
+	String assetAssignTime;
 }

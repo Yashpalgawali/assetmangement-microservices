@@ -24,7 +24,9 @@ public class AssignAssetsDto {
 	
 	String company;
 
-	List<Long> assetId;
+	//List<Long> assetId;
+	
+	List<String> assetId;
 
 	String assetName;
 	

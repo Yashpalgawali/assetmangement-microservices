@@ -52,6 +52,7 @@ public class EmployeeServImpl implements IEmployeeService {
 
 	private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+	
 	@Override
 	public void createEmployee(EmployeeDto empDto) {
 
@@ -80,7 +81,10 @@ public class EmployeeServImpl implements IEmployeeService {
 					AssignAssets assignAssets = new AssignAssets();
 					assignAssets.setAssetId(id);
 					assignAssets.setEmployee(savedEmployee);
-
+					assignAssets.setAssetAssignDate(dateFormatter.format(LocalDateTime.now()));
+					assignAssets.setAssetAssignTime(timeFormatter.format(LocalDateTime.now()));
+					
+					System.err.println("AssignAset Object is "+assignAssets.toString());
 					AssignAssets assignedAssets = assignassetrepo.save(assignAssets);
 
 					if (assignedAssets != null) {
@@ -97,6 +101,7 @@ public class EmployeeServImpl implements IEmployeeService {
 						assignHistory.setAssignedDate(dateFormatter.format(LocalDateTime.now()));
 						assignHistory.setAssignedTime(timeFormatter.format(LocalDateTime.now()));
 
+						System.err.println("History object is "+assignHistory.toString());
 						AssignAssetHistory save = assignassethistrepo.save(assignHistory);
 
 					} else {
@@ -211,14 +216,14 @@ public class EmployeeServImpl implements IEmployeeService {
 	@Transactional
 	public void updateEmployee(String correlationId, EmployeeDto empDto) {
 
-		System.err.println("Inside updateEmployee() "+empDto.toString());
+		System.err.println("Inside updateEmployee() " + empDto.toString());
 		String new_assets = "";
 		List<Long> nl = empDto.getAsset_ids();
 
 		// this.getEmployeeById(correlationId, empDto.getEmployeeId());
 
 		int res = emprepo.updateEmployee(empDto.getEmployeeId(), empDto.getEmployeeName(), empDto.getDepartmentId(),
-				empDto.getCompanyId());
+				empDto.getCompanyId(), empDto.getEmployeeEmail(), empDto.getEmployeeContact());
 
 		if (nl != null) {
 			if (nl.size() > 0) {
@@ -289,6 +294,10 @@ public class EmployeeServImpl implements IEmployeeService {
 //						ast.setQuantity(getasset.getQuantity());
 
 								AssignAssetHistory ahist = new AssignAssetHistory();
+								
+								ahist.setAssetId(asid);
+								ahist.setEmpId(empDto.getEmployeeId());
+								ahist.setAssettype(assetDto.getAssetType().getAssetType());								
 								ahist.setAssetName(assetDto.getAssetName());
 
 								ahist.setEmpName(managedEmp.getEmployeeName());
@@ -337,12 +346,18 @@ public class EmployeeServImpl implements IEmployeeService {
 							isassigned = assignassetrepo.save(assignasset);
 
 							if (isassigned != null) {
-								qty = assetDto.getQty() -1 ;
-								
+								qty = assetDto.getQty() - 1;
+
 								assetClient.updateAssetQuantitybyAssetId(astid, (Integer) qty);
 
 								AssignAssetHistory ahist = new AssignAssetHistory();
 
+								ahist.setAssetId(asid);
+								ahist.setEmpId(empDto.getEmployeeId());
+								ahist.setAssettype(assetDto.getAssetType().getAssetType());
+
+								ahist.setUpdateDate(dateFormatter.format(LocalDateTime.now()));
+								ahist.setUpdateTime(timeFormatter.format(LocalDateTime.now()));
 								ahist.setAssetName(assetDto.getAssetName());
 								ahist.setEmpName(managedEmp.getEmployeeName());
 //						ahist.setOperation_date(dateformatter.format(LocalDateTime.now()));
@@ -399,12 +414,18 @@ public class EmployeeServImpl implements IEmployeeService {
 
 							if (isassigned != null) {
 
-								qty = assetDto.getQty() -1;
+								qty = assetDto.getQty() - 1;
 
 								assetClient.updateAssetQuantitybyAssetId(astid, (Integer) qty);
 
 								AssignAssetHistory ahist = new AssignAssetHistory();
-								ahist.setAssetName(assetDto.getAssetName());
+								ahist.setAssetId(asid);
+								ahist.setEmpId(empDto.getEmployeeId());
+								ahist.setAssettype(assetDto.getAssetType().getAssetType());
+
+								ahist.setUpdateDate(dateFormatter.format(LocalDateTime.now()));
+								ahist.setUpdateTime(timeFormatter.format(LocalDateTime.now()));
+								ahist.setAssetName(assetDto.getAssetName());								
 								ahist.setEmpName(managedEmp.getEmployeeName());
 
 								assignassethistrepo.save(ahist);
@@ -432,13 +453,20 @@ public class EmployeeServImpl implements IEmployeeService {
 								int qty = assetDto.getQty();
 								qty += 1;
 
-								assetClient.updateAssetQuantitybyAssetId(asid, (Integer)qty);
+								assetClient.updateAssetQuantitybyAssetId(asid, (Integer) qty);
 
 								AssignAssetHistory ahist = new AssignAssetHistory();
-
+								
+								
 								ahist.setAssetName(assetDto.getAssetName());
 								ahist.setEmpName(managedEmp.getEmployeeName());
+								ahist.setAssetId(asid);
+								ahist.setEmpId(empDto.getEmployeeId());
+								ahist.setAssettype(assetDto.getAssetType().getAssetType());
 
+								ahist.setUpdateDate(dateFormatter.format(LocalDateTime.now()));
+								ahist.setUpdateTime(timeFormatter.format(LocalDateTime.now()));
+								
 								assignassethistrepo.save(ahist);
 
 							}

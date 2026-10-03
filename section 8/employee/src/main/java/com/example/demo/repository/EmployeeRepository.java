@@ -10,18 +10,16 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.Employee;
 import java.util.List;
 
-
-
 @Repository("emprepo")
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 	public Optional<Employee> findByEmployeeName(String empName);
-	
+
 	List<Employee> findByDepartmentId(Long department);
-	
+
 	List<Employee> findByCompanyId(Long company);
-	
-	@Query("UPDATE Employee e SET e.employeeName=:name,e.departmentId=:deptid,e.companyId=:compid WHERE e.employeeId=:empid")
+
+	@Query("UPDATE Employee e SET e.employeeName=:name,e.departmentId=:deptid,e.companyId=:compid,e.employeeEmail=:email,e.employeeContact=:contact WHERE e.employeeId=:empid")
 	@Modifying
-	public int updateEmployee(Long empid,String name, Long deptid, Long compid);
+	public int updateEmployee(Long empid, String name, Long deptid, Long compid, String email, Long contact);
 }
