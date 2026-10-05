@@ -49,6 +49,7 @@ public class SecurityConfig {
         // Allow both LAN IP and localhost frontend origins
         configuration.setAllowedOrigins(Arrays.asList(
         		"http://192.168.0.219:3000",
+        		"http://192.168.0.219",
                 "http://localhost:3000",
         		"http://192.168.0.219:3001",
                 "http://localhost:3001"
